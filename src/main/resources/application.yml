@@ -1,0 +1,11 @@
+logging:
+  level:
+    root: INFO
+    nz:
+      roag: DEBUG
+server:
+  port: 7878
+  ssl:
+    enabled: true
+    keystore: /tomcat-ssl-keystore.jks
+#    keystore: src/main/resources/tomcat-ssl-keystore.jks
