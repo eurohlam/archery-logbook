@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
-@Transactional
 public class ClubService {
 
     @Autowired
@@ -25,10 +24,12 @@ public class ClubService {
         return clubRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
+    @Transactional
     public void addClub(Club club) {
         clubRepository.save(club);
     }
 
+    @Transactional
     public void deleteClub(long id) {
         clubRepository.deleteById(id);
     }

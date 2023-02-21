@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
-@Transactional
 public class BowService {
 
     private final Logger logger = LoggerFactory.getLogger(BowService.class);
@@ -32,6 +31,7 @@ public class BowService {
         //return archerRepository.findById(archerId).orElseThrow(NoSuchElementException::new).getBowList();
     }
 
+    @Transactional
     public void addBow(long archerId, Bow bow) throws NoSuchElementException {
         logger.debug("Adding a new bow {} for archerId {}", bow, archerId);
         var archer = archerRepository.findById(archerId).orElseThrow(NoSuchElementException::new);
@@ -43,10 +43,12 @@ public class BowService {
         return bowRepository.findById(bowId).orElseThrow(NoSuchElementException::new);
     }
 
+    @Transactional
     public void deleteBow(long id) {
         bowRepository.deleteById(id);
     }
 
+    @Transactional
     public void addDistanceSettings(long bowId, DistanceSettings distanceSettings) throws NoSuchElementException {
         logger.debug("Adding distance setting {} for bowId={}", distanceSettings, bowId);
         var bow = getBow(bowId);

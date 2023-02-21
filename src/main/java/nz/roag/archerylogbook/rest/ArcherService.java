@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
-@Transactional
 public class ArcherService {
 
     private final Logger logger = LoggerFactory.getLogger(ArcherService.class);
@@ -30,6 +29,11 @@ public class ArcherService {
                 .and(Sort.by("firstName").ascending()));
     }
 
+    public List<Archer> listArchersByClub(long clubId) {
+        return archerRepository.findByClubIdOrderByLastNameAsc(clubId);
+    }
+
+    @Transactional
     public void addArcher(Archer archer) {
         logger.debug("Adding a new archer {}", archer);
         archerRepository.save(archer);
@@ -39,6 +43,7 @@ public class ArcherService {
         return archerRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
+    @Transactional
     public void deleteArcher(long id) {
         archerRepository.deleteById(id);
     }

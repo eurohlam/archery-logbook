@@ -17,9 +17,14 @@ public class ArcherController {
     private ArcherService archerService;
 
     @GetMapping("")
-    public List<Archer> listAllArchers() {
-        return archerService.listAllArchers();
+    public List<Archer> listAllArchers(@RequestParam(required = false) String clubId) {
+        if (clubId != null) {
+            return archerService.listArchersByClub(Long.parseLong(clubId));
+        } else {
+            return archerService.listAllArchers();
+        }
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Archer> getArcher(@PathVariable long id) {
