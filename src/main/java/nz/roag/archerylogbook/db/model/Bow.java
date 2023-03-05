@@ -11,7 +11,7 @@ import java.util.Set;
 @Table(name = "ARCHERY_BOW")
 public class Bow {
 
-    public enum Type {COMPOUND, RECURVE};
+    public enum Type {COMPOUND, RECURVE, TRADITIONAL};
     public enum Level {BEGINNER, INTERMEDIATE, ADVANCED}
 
     @Getter
@@ -47,6 +47,9 @@ public class Bow {
 
     @Getter @Setter
     private String limbsModel;
+
+    @Getter @Setter
+    private String traditionalModel;
 
     @Getter @Setter
     @OneToMany(targetEntity = DistanceSettings.class, cascade = CascadeType.ALL)

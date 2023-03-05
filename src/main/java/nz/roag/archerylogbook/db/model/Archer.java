@@ -31,6 +31,12 @@ public class Archer {
     private String lastName;
 
     @Getter @Setter
+    private String email;
+
+    @Getter @Setter
+    private String clubName;
+
+    @Getter @Setter
     @Column(name = "club_id")
     private long clubId;
 
@@ -46,6 +52,6 @@ public class Archer {
 
     @Override
     public String toString() {
-        return String.format("{ id: %d, username: %s, firstName: %s, lastName: %s }", id, username, firstName, lastName);
+        return String.format("{ id: %d, username: %s, firstName: %s, lastName: %s, email: %s }", id, username, firstName, lastName, email);
     }
 }

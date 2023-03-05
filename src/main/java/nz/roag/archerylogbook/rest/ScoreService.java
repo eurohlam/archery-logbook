@@ -35,12 +35,13 @@ public class ScoreService {
     private ArcherRepository archerRepository;
 
     public List<Score> listAllScores(long archerId) {
+        logger.debug("Getting scores for archerId {}", archerId);
         return scoreRepository.findByArcherId(archerId, Sort.by("scoreDate").descending());
     }
 
     @Transactional
     public void addScore(long archerId, Score score) {
-        logger.debug("Adding a new score {} for archerId {}", score, archerId);
+        logger.info("Adding a new score {} for archerId {}", score, archerId);
         Archer archer = archerRepository.findById(archerId).orElseThrow(NoSuchElementException::new);
         score.setArcherId(archer.getId());
         var ends = score.getEnds();
@@ -59,11 +60,13 @@ public class ScoreService {
     }
 
     public Score getScore(long id) throws NoSuchElementException {
+        logger.debug("Getting score by id {}", id);
         return scoreRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
     @Transactional
     public void deleteScore(long id) {
+        logger.warn("Deleting score by id {}", id);
         scoreRepository.deleteById(id);
     }
 }

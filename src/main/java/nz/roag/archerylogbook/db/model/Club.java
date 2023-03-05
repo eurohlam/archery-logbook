@@ -21,12 +21,21 @@ public class Club {
     private String name;
 
     @Getter @Setter
+    private String country;
+
+    @Getter @Setter
+    private String city;
+
+    @Getter @Setter
+    private String url;
+
+    @Getter @Setter
     @OneToMany(targetEntity = Archer.class, cascade = CascadeType.DETACH)
     @JoinColumn(name = "club_id")
     private Set<Archer> archers = new HashSet<>();
 
     @Override
     public String toString() {
-        return String.format("{ id: %d, name: %s }", id, name);
+        return String.format("{ id: %d, name: %s, country: %s, city: %s, url: %s }", id, name, country, city, url);
     }
 }

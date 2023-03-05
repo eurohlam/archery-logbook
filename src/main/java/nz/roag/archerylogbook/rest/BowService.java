@@ -26,6 +26,7 @@ public class BowService {
     private ArcherRepository archerRepository;
 
     public List<Bow> listAllBows(long archerId) throws NoSuchElementException {
+        logger.debug("Getting bows for archer with id {}", archerId);
         var archer = archerRepository.findById(archerId).orElseThrow(NoSuchElementException::new);
         return bowRepository.findByArcherId(archer.getId(), Sort.by("name").ascending());
         //return archerRepository.findById(archerId).orElseThrow(NoSuchElementException::new).getBowList();
@@ -40,11 +41,13 @@ public class BowService {
     }
 
     public Bow getBow(long bowId) throws NoSuchElementException {
+        logger.debug("Getting bow by id {}", bowId);
         return bowRepository.findById(bowId).orElseThrow(NoSuchElementException::new);
     }
 
     @Transactional
     public void deleteBow(long id) {
+        logger.warn("Deleting bow with id {}", id);
         bowRepository.deleteById(id);
     }
 

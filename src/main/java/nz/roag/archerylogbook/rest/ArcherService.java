@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import nz.roag.archerylogbook.db.ArcherRepository;
 import nz.roag.archerylogbook.db.ClubRepository;
 import nz.roag.archerylogbook.db.model.Archer;
+import nz.roag.archerylogbook.db.model.Club;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,26 +26,34 @@ public class ArcherService {
     private ClubRepository clubRepository;
 
     public List<Archer> listAllArchers() {
+        logger.debug("Getting list of all archers");
         return archerRepository.findAll(Sort.by("lastName").ascending()
                 .and(Sort.by("firstName").ascending()));
     }
 
     public List<Archer> listArchersByClub(long clubId) {
+        logger.debug("Getting list of archers for clubId {}", clubId);
         return archerRepository.findByClubIdOrderByLastNameAsc(clubId);
     }
 
     @Transactional
     public void addArcher(Archer archer) {
-        logger.debug("Adding a new archer {}", archer);
+        logger.info("Adding a new archer {}", archer);
+        if (archer.getClubName() != null) {
+            Club club = clubRepository.findFirstByName(archer.getClubName());
+            archer.setClubId(club.getId());
+        }
         archerRepository.save(archer);
     }
 
     public Archer getArcher(long id) throws NoSuchElementException {
+        logger.debug("Getting archer by id {}", id);
         return archerRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
     @Transactional
     public void deleteArcher(long id) {
+        logger.warn("Deleting archer with id {}", id);
         archerRepository.deleteById(id);
     }
 

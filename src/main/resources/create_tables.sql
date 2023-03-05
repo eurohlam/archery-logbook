@@ -1,33 +1,45 @@
-
+DROP TABLE IF EXISTS `archery_round`;
+DROP TABLE IF EXISTS `archery_end`;
+DROP TABLE IF EXISTS `archery_score`;
+DROP TABLE IF EXISTS `archery_distance_settings`;
+DROP TABLE IF EXISTS `archery_bow`;
+DROP TABLE IF EXISTS `archery_archer`;
 DROP TABLE IF EXISTS `archery_club`;
+
+
 CREATE TABLE `archery_club` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
+  `country` varchar(50) DEFAULT NULL,
+  `city` varchar(50) DEFAULT NULL,
+  `url` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 );
 
-INSERT INTO `archery_club` (`id`, `name`) VALUES
-(1,	'Mana Club');
+INSERT INTO `archery_club` (`id`, `name`, `country`, `city`) VALUES
+(1,	'Mana Club', 'NZ', 'WGT');
 
-DROP TABLE IF EXISTS `archery_archer`;
+
 CREATE TABLE `archery_archer` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL,
   `password` varchar(50) NOT NULL,
   `first_name` varchar(50) NOT NULL,
-  `last_name` varchar(50) NOT NULL,
-  `club_id` bigint(20) NOT NULL,
+  `last_name` varchar(50) DEFAULT NULL,
+  `email` varchar(100) NOT NULL,
+  `club_name` varchar(50) DEFAULT NULL,
+  `club_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   KEY `club_id` (`club_id`),
   CONSTRAINT `archery_archer_ibfk_1` FOREIGN KEY (`club_id`) REFERENCES `archery_club` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 );
 
-INSERT INTO `archery_archer` (`id`, `username`, `password`, `first_name`, `last_name`, `club_id`) VALUES
-(1,	'tester',	'tester',	'Vasya',	'Pupkin',	1);
+INSERT INTO `archery_archer` (`id`, `username`, `password`, `first_name`, `last_name`, `email`, `club_id`) VALUES
+(1,	'tester',	'tester',	'Vasya',	'Pupkin', 'vasya@pupkin.org',	1);
 
-DROP TABLE IF EXISTS `archery_bow`;
+
 CREATE TABLE `archery_bow` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `archer_id` bigint(20) NOT NULL,
@@ -38,6 +50,7 @@ CREATE TABLE `archery_bow` (
   `compound_model` varchar(50) DEFAULT NULL,
   `riser_model` varchar(50) DEFAULT NULL,
   `limbs_model` varchar(50) DEFAULT NULL,
+  `traditional_model` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `archer_id` (`archer_id`),
   CONSTRAINT `archery_bow_ibfk_1` FOREIGN KEY (`archer_id`) REFERENCES `archery_archer` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
@@ -49,7 +62,7 @@ INSERT INTO `archery_bow` (`id`, `archer_id`, `name`, `type`, `level`, `poundage
 
 
 
-DROP TABLE IF EXISTS `archery_distance_settings`;
+
 CREATE TABLE `archery_distance_settings` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `bow_id` bigint(20) NOT NULL,
@@ -66,7 +79,7 @@ INSERT INTO `archery_distance_settings` (`id`, `bow_id`, `distance`, `sight`, `i
 (2,	5,	30,	6,	'0');
 
 
-DROP TABLE IF EXISTS `archery_score`;
+
 CREATE TABLE `archery_score` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `archer_id` bigint(20) NOT NULL,
@@ -84,7 +97,7 @@ CREATE TABLE `archery_score` (
 INSERT INTO `archery_score` (`id`, `archer_id`, `bow_id`, `score_date`, `distance`, `comment`) VALUES
 (1,	1,	1,	'2023-02-16 22:29:32',	20,	'for fun');
 
-DROP TABLE IF EXISTS `archery_end`;
+
 CREATE TABLE `archery_end` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `score_id` bigint(20) NOT NULL,
@@ -99,7 +112,7 @@ INSERT INTO `archery_end` (`id`, `score_id`, `end_number`) VALUES
 (2,	1,	2),
 (3,	1,	3);
 
-DROP TABLE IF EXISTS `archery_round`;
+
 CREATE TABLE `archery_round` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `end_id` bigint(20) NOT NULL,
