@@ -85,8 +85,10 @@ CREATE TABLE `archery_score` (
   `archer_id` bigint(20) NOT NULL,
   `bow_id` bigint(20),
   `score_date` datetime NOT NULL DEFAULT current_timestamp(),
-  `distance` int(11) NOT NULL,
+  `match` varchar(50) NOT NULL,
   `comment` longtext,
+  `country` varchar(50) DEFAULT NULL,
+  `city` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `archery_score_ibfk_1` (`archer_id`),
   KEY `archery_score_ibfk_2` (`bow_id`),
@@ -94,8 +96,8 @@ CREATE TABLE `archery_score` (
   CONSTRAINT `archery_score_ibfk_2` FOREIGN KEY (`bow_id`) REFERENCES `archery_bow` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
-INSERT INTO `archery_score` (`id`, `archer_id`, `bow_id`, `score_date`, `distance`, `comment`) VALUES
-(1,	1,	1,	'2023-02-16 22:29:32',	20,	'for fun');
+INSERT INTO `archery_score` (`id`, `archer_id`, `bow_id`, `score_date`, `match`, `comment`, `country`, `city`) VALUES
+(1,	1,	1,	'2023-02-16 22:29:32',	20,	'for fun', 'NZ', 'WGT');
 
 
 CREATE TABLE `archery_end` (

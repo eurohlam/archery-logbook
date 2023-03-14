@@ -8,7 +8,6 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "ARCHERY_SCORE")
@@ -33,11 +32,19 @@ public class Score {
 
     @Getter @Setter @NonNull
     @Column(nullable = false)
-    private short distance;
+    private String match;
 
     @Getter @Setter
     @Column
     private String comment;
+
+    @Getter @Setter
+    @Column
+    private String country;
+
+    @Getter @Setter
+    @Column
+    private String city;
 
     @Getter @Setter
     @OneToMany(targetEntity = End.class, cascade = CascadeType.ALL)
@@ -52,8 +59,8 @@ public class Score {
         return ends.stream().reduce(0, (sum, end) -> sum + end.getSum(), Integer::sum);
     }
 
-    public double getAvg() {
-        return (double)getSum()/ getEndsCount();
+    public String getAvg() {
+        return String.format("%.2f", (double)getSum()/ getEndsCount());
     }
 
     @Override

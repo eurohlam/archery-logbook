@@ -37,7 +37,7 @@ public class End {
         return rounds.stream().reduce(0, (sum, round) -> sum + round.getRoundScore(), Integer::sum);
     }
 
-    public double getAvg() {
-        return (double)getSum()/ getRoundsCount();
+    public String getAvg() {
+        return String.format("%.2f", (double)getSum()/ getRoundsCount());
     }
 }
