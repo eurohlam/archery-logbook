@@ -44,7 +44,7 @@ CREATE TABLE `archery_bow` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `archer_id` bigint(20) NOT NULL,
   `name` varchar(50) NOT NULL,
-  `type` enum('RECURVE','COMPOUND') NOT NULL,
+  `type` enum('RECURVE','COMPOUND','TRADITIONAL') NOT NULL,
   `level` enum('BEGINNER','INTERMEDIATE','ADVANCED') DEFAULT NULL,
   `poundage` varchar(50) DEFAULT NULL,
   `compound_model` varchar(50) DEFAULT NULL,
@@ -58,7 +58,7 @@ CREATE TABLE `archery_bow` (
 
 INSERT INTO `archery_bow` (`id`, `archer_id`, `name`, `type`, `level`, `poundage`, `compound_model`, `riser_model`, `limbs_model`) VALUES
 (1,	1,	'My bow',	'RECURVE',	'INTERMEDIATE',	'28-32',	NULL,	'Black',	'hren'),
-(5,	1,	'My bets bow',	'RECURVE',	'INTERMEDIATE',	'28-32',	NULL,	'Black',	NULL);
+(5,	1,	'My best bow',	'RECURVE',	'INTERMEDIATE',	'28-32',	NULL,	'Black',	NULL);
 
 
 

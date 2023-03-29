@@ -31,7 +31,7 @@ public class Score {
     private Date scoreDate = new Date();
 
     @Getter @Setter @NonNull
-    @Column(nullable = false)
+    @Column(name= "`match`", nullable = false)
     private String match;
 
     @Getter @Setter
@@ -65,6 +65,6 @@ public class Score {
 
     @Override
     public String toString() {
-        return String.format("{ id: %d, scoreDate: %s, ends: %d, sum: %d, avg: %f }", getId(), getScoreDate(), getEndsCount(), getSum(), getAvg());
+        return String.format("{ id: %d, scoreDate: %s, ends: %d, sum: %d, avg: %s }", getId(), getScoreDate(), getEndsCount(), getSum(), getAvg());
     }
 }
