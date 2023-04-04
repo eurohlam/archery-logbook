@@ -48,7 +48,7 @@ public class ArcherService {
 
     public Archer getArcher(long id) throws NoSuchElementException {
         logger.debug("Getting archer by id {}", id);
-        return archerRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        return archerRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Archer not found. archerId=" + id));
     }
 
     @Transactional

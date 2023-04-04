@@ -21,7 +21,7 @@ public class ClubService {
     }
 
     public Club getClub(long id) throws NoSuchElementException{
-        return clubRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        return clubRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Club not found. clubId=" + id));
     }
 
     @Transactional

@@ -34,15 +34,16 @@ public class ScoreService {
     @Autowired
     private ArcherRepository archerRepository;
 
-    public List<Score> listAllScores(long archerId) {
+    public List<Score> listAllScores(long archerId) throws NoSuchElementException {
         logger.debug("Getting scores for archerId {}", archerId);
-        return scoreRepository.findByArcherId(archerId, Sort.by("scoreDate").descending());
+        var archer = archerRepository.findById(archerId).orElseThrow(() -> new NoSuchElementException("Archer not found. archerId=" + archerId));
+        return scoreRepository.findByArcherId(archer.getId(), Sort.by("scoreDate").descending());
     }
 
     @Transactional
-    public void addScore(long archerId, Score score) {
+    public void addScore(long archerId, Score score) throws NoSuchElementException {
         logger.info("Adding a new score {} for archerId {}", score, archerId);
-        Archer archer = archerRepository.findById(archerId).orElseThrow(NoSuchElementException::new);
+        Archer archer = archerRepository.findById(archerId).orElseThrow(() -> new NoSuchElementException("Archer not found. archerId=" + archerId));
         score.setArcherId(archer.getId());
         var ends = score.getEnds();
         score.setEnds(Collections.emptyList());
@@ -61,7 +62,7 @@ public class ScoreService {
 
     public Score getScore(long id) throws NoSuchElementException {
         logger.debug("Getting score by id {}", id);
-        return scoreRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        return scoreRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Score not found. scoreId=" + id));
     }
 
     @Transactional

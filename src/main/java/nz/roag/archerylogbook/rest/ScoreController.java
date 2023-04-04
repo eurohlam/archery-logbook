@@ -1,6 +1,8 @@
 package nz.roag.archerylogbook.rest;
 
 import nz.roag.archerylogbook.db.model.Score;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +15,20 @@ import java.util.NoSuchElementException;
 @RequestMapping("/archers/{archerId}/scores")
 public class ScoreController {
 
+    private final Logger logger = LoggerFactory.getLogger(ScoreController.class);
+
     @Autowired
     private ScoreService scoreService;
 
     @GetMapping("")
-    public List<Score> listAllScores(@PathVariable long archerId) {
-        return scoreService.listAllScores(archerId);
+    public ResponseEntity<List<Score>> listAllScores(@PathVariable long archerId) {
+        try {
+            List<Score> scores = scoreService.listAllScores(archerId);
+            return new ResponseEntity<>(scores, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            logger.error(e.getMessage(), e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/{id}")
@@ -27,6 +37,7 @@ public class ScoreController {
             Score score = scoreService.getScore(id);
             return new ResponseEntity<>(score, HttpStatus.OK);
         } catch (NoSuchElementException e) {
+            logger.error(e.getMessage(), e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -37,6 +48,7 @@ public class ScoreController {
             scoreService.addScore(archerId, score);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
+            logger.error(e.getMessage(), e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }

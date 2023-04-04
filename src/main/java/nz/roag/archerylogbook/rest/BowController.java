@@ -2,6 +2,8 @@ package nz.roag.archerylogbook.rest;
 
 import nz.roag.archerylogbook.db.model.Bow;
 import nz.roag.archerylogbook.db.model.DistanceSettings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,13 +15,21 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping("/archers/{archerId}/bows")
 public class BowController {
+    private final Logger logger = LoggerFactory.getLogger(BowController.class);
 
     @Autowired
     private BowService bowService;
 
     @GetMapping("")
-    public List<Bow> listAllBows(@PathVariable long archerId) {
-        return bowService.listAllBows(archerId);
+    public ResponseEntity<List<Bow>> listAllBows(@PathVariable long archerId) {
+        try {
+            List<Bow> bows = bowService.listAllBows(archerId);
+            return new ResponseEntity<>(bows, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            logger.error(e.getMessage(), e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
     }
 
     @GetMapping("/{bowId}")
@@ -28,6 +38,7 @@ public class BowController {
             Bow bow = bowService.getBow(bowId);
             return new ResponseEntity<>(bow, HttpStatus.OK);
         } catch (NoSuchElementException e) {
+            logger.error(e.getMessage(), e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -38,6 +49,7 @@ public class BowController {
             bowService.addBow(archerId, bow);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
+            logger.error(e.getMessage(), e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -48,6 +60,7 @@ public class BowController {
             bowService.addDistanceSettings(bowId, distanceSettings);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
+            logger.error(e.getMessage(), e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }

@@ -27,22 +27,21 @@ public class BowService {
 
     public List<Bow> listAllBows(long archerId) throws NoSuchElementException {
         logger.debug("Getting bows for archer with id {}", archerId);
-        var archer = archerRepository.findById(archerId).orElseThrow(NoSuchElementException::new);
+        var archer = archerRepository.findById(archerId).orElseThrow(() -> new NoSuchElementException("Archer not found. archerId=" + archerId));
         return bowRepository.findByArcherId(archer.getId(), Sort.by("name").ascending());
-        //return archerRepository.findById(archerId).orElseThrow(NoSuchElementException::new).getBowList();
     }
 
     @Transactional
     public void addBow(long archerId, Bow bow) throws NoSuchElementException {
         logger.debug("Adding a new bow {} for archerId {}", bow, archerId);
-        var archer = archerRepository.findById(archerId).orElseThrow(NoSuchElementException::new);
+        var archer = archerRepository.findById(archerId).orElseThrow(() -> new NoSuchElementException("Archer not found. archerId=" + archerId));
         bow.setArcherId(archer.getId());
         bowRepository.save(bow);
     }
 
     public Bow getBow(long bowId) throws NoSuchElementException {
         logger.debug("Getting bow by id {}", bowId);
-        return bowRepository.findById(bowId).orElseThrow(NoSuchElementException::new);
+        return bowRepository.findById(bowId).orElseThrow(() -> new NoSuchElementException("Bow not found. bowId=" + bowId));
     }
 
     @Transactional
@@ -64,7 +63,8 @@ public class BowService {
                     .stream()
                     .filter(el -> el.getDistance() == distanceSettings.getDistance())
                     .findFirst()
-                    .orElseThrow();
+                    .orElseThrow(
+                            () -> new NoSuchElementException("Distance not found. bowId=" + bowId + "; distance=" + distanceSettings.getDistance()));
             ds.setSight(distanceSettings.getSight());
             ds.setTested(distanceSettings.isTested());
         } else {
