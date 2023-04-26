@@ -23,21 +23,18 @@ INSERT INTO `archery_club` (`id`, `name`, `country`, `city`) VALUES
 
 CREATE TABLE `archery_archer` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `username` varchar(50) NOT NULL,
-  `password` varchar(50) NOT NULL,
   `first_name` varchar(50) NOT NULL,
   `last_name` varchar(50) DEFAULT NULL,
   `email` varchar(100) NOT NULL,
-  `club_name` varchar(50) DEFAULT NULL,
   `club_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `email` (`email`),
   KEY `club_id` (`club_id`),
   CONSTRAINT `archery_archer_ibfk_1` FOREIGN KEY (`club_id`) REFERENCES `archery_club` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 );
 
-INSERT INTO `archery_archer` (`id`, `username`, `password`, `first_name`, `last_name`, `email`, `club_id`) VALUES
-(1,	'tester',	'tester',	'Vasya',	'Pupkin', 'vasya@pupkin.org',	1);
+INSERT INTO `archery_archer` (`id`, `first_name`, `last_name`, `email`, `club_id`) VALUES
+(1,	'Vasya',	'Pupkin', 'vasya@pupkin.org',	1);
 
 
 CREATE TABLE `archery_bow` (

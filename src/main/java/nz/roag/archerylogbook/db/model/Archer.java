@@ -11,18 +11,10 @@ import java.util.List;
 @Table(name = "ARCHERY_ARCHER")
 public class Archer {
 
-    @Getter
+    @Getter @Setter
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    @Getter @Setter
-    @Column(nullable = false, unique = true)
-    private String username;
-
-    @Getter @Setter
-    @Column(nullable = false)
-    private String password;
 
     @Getter @Setter
     private String firstName;
@@ -32,9 +24,6 @@ public class Archer {
 
     @Getter @Setter
     private String email;
-
-    @Getter @Setter
-    private String clubName;
 
     @Getter @Setter
     @Column(name = "club_id")
@@ -52,6 +41,23 @@ public class Archer {
 
     @Override
     public String toString() {
-        return String.format("{ id: %d, username: %s, firstName: %s, lastName: %s, email: %s }", id, username, firstName, lastName, email);
+        return String.format("{ id: %d, firstName: %s, lastName: %s, email: %s }", id, firstName, lastName, email);
     }
+
+    /*
+    We want to use some transient fields that come from registration form
+    to create a new club during the registration process
+    */
+    @Getter @Setter
+    @Transient
+    private String clubName;
+
+    @Getter @Setter
+    @Transient
+    private String country;
+
+    @Getter @Setter
+    @Transient
+    private String city;
+
 }

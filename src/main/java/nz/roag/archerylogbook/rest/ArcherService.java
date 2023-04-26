@@ -41,6 +41,13 @@ public class ArcherService {
         logger.info("Adding a new archer {}", archer);
         if (archer.getClubName() != null) {
             Club club = clubRepository.findFirstByName(archer.getClubName());
+            if (club == null) {
+                Club newClub = new Club();
+                newClub.setName(archer.getClubName());
+                newClub.setCity(archer.getCity());
+                newClub.setCountry(archer.getCountry());
+                club = clubRepository.save(newClub);
+            }
             archer.setClubId(club.getId());
         }
         archerRepository.save(archer);
