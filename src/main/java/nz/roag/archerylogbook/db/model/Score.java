@@ -65,7 +65,8 @@ public class Score {
     }
 
     public String getAvg() {
-        return String.format("%.2f", (double)getSum()/ getEndsCount());
+        var sum = ends.stream().reduce((double)0, (avgSum, end) -> avgSum + Double.parseDouble(end.getAvg()), Double::sum);
+        return String.format("%.2f", sum / getEndsCount());
     }
 
     @Override
