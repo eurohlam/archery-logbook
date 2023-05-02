@@ -27,7 +27,7 @@ public class Archer {
 
     @Getter @Setter
     @Column(name = "club_id")
-    private long clubId;
+    private Long clubId;
 
     @Getter @Setter
     @OneToMany(targetEntity = Bow.class, cascade = CascadeType.ALL)

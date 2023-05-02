@@ -24,7 +24,12 @@ public class Score {
 
     @Getter @Setter
     @Column(name = "bow_id")
-    private long bowId;
+    private Long bowId;
+
+    @Getter
+    @OneToOne(targetEntity = Bow.class)
+    @JoinColumn(name = "bow_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private Bow bow;
 
     @Getter @Setter
     @Column(unique = true)
