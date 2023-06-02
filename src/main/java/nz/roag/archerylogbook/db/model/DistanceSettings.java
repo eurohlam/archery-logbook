@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "ARCHERY_DISTANCE_SETTINGS")
-public class DistanceSettings {
+public class DistanceSettings implements Comparable<DistanceSettings> {
 
     @Getter
     @Id
@@ -31,5 +31,10 @@ public class DistanceSettings {
     @Override
     public String toString() {
         return String.format("{ distance: %s, sight: %d }", distance, sight);
+    }
+
+    @Override
+    public int compareTo(DistanceSettings ds) {
+        return Integer.compare(this.getDistance(), ds.getDistance());
     }
 }

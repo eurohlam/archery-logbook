@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 @Entity
 @Table(name = "ARCHERY_BOW")
@@ -54,7 +54,7 @@ public class Bow {
     @Getter @Setter
     @OneToMany(targetEntity = DistanceSettings.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "bow_id")
-    private Set<DistanceSettings> distanceSettingsList = new HashSet<>();
+    private SortedSet<DistanceSettings> distanceSettingsList = new TreeSet<>();
 
     @Override
     public String toString() {

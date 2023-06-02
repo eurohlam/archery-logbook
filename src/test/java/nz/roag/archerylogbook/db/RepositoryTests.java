@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 
 @DataJpaTest
@@ -80,11 +81,33 @@ public class RepositoryTests {
         bow.setRiserModel("test riser");
         bow.setLimbsModel("test limbs");
         bow.setArcherId(archerId);
-        entityManager.persist(bow);
+        var storedBow = entityManager.persist(bow);
+
+        var ds1 = new DistanceSettings();
+        ds1.setDistance(20);
+        ds1.setSight(6);
+        ds1.setBowId(storedBow.getId());
+        ds1.setTested(true);
+        storedBow.getDistanceSettingsList().add(ds1);
+        var ds2 = new DistanceSettings();
+        ds2.setDistance(10);
+        ds2.setSight(5);
+        ds2.setBowId(storedBow.getId());
+        ds2.setTested(true);
+        storedBow.getDistanceSettingsList().add(ds2);
+        var ds3 = new DistanceSettings();
+        ds3.setDistance(15);
+        ds3.setSight(5);
+        ds3.setBowId(storedBow.getId());
+        ds3.setTested(true);
+        storedBow.getDistanceSettingsList().add(ds3);
+        entityManager.persist(storedBow);
+
 
         var bows = bowRepository.findByArcherId(archerId, Sort.by("name").ascending());
         Assertions.assertEquals("Test bow", bows.get(0).getName());
         Assertions.assertEquals(Bow.Type.RECURVE, bows.get(0).getType());
+        Assertions.assertEquals(3, bows.get(0).getDistanceSettingsList().size());
     }
 
     @Test

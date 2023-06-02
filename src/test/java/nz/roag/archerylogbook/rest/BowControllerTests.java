@@ -52,6 +52,13 @@ public class BowControllerTests {
                     "distanceSettingsList":[]
                 }
                 """;
+    private final String dsJson = """
+            {
+                "distance": "50", 
+                "sight": "12",
+                "isTested": true
+            }
+            """;
 
     @BeforeEach
     void beforeEach() {
@@ -111,6 +118,17 @@ public class BowControllerTests {
     @Test
     void deleteBow() throws Exception{
         mvc.perform(delete("/archers/1/bows/0"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void addDistanceSettings() throws Exception{
+        given(bowRepository.findById(anyLong()))
+                .willReturn(Optional.of(bow));
+
+        mvc.perform(put("/archers/1/bows/1/")
+                        .contentType("application/json")
+                        .content(dsJson))
                 .andExpect(status().isOk());
     }
 }
