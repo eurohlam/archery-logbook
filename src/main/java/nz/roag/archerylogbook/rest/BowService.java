@@ -45,6 +45,27 @@ public class BowService {
     }
 
     @Transactional
+    public void updateBow(Bow bow) {
+        logger.debug("Updating bow data {} for bowId={}", bow, bow.getId());
+        Bow storedBow = bowRepository.findById(bow.getId()).orElseThrow(() -> new NoSuchElementException("Bow not found. bowId=" + bow.getId()));
+        storedBow.setName(bow.getName());
+        storedBow.setType(bow.getType());
+        storedBow.setPoundage(bow.getPoundage());
+        storedBow.setLevel(bow.getLevel());
+        if (bow.getType() == Bow.Type.RECURVE) {
+            storedBow.setRiserModel(bow.getRiserModel());
+            storedBow.setLimbsModel(bow.getLimbsModel());
+        }
+        if (bow.getType() == Bow.Type.COMPOUND) {
+            storedBow.setCompoundModel(bow.getCompoundModel());
+        }
+        if (bow.getType() == Bow.Type.TRADITIONAL) {
+            storedBow.setTraditionalModel(bow.getTraditionalModel());
+        }
+        bowRepository.save(storedBow);
+    }
+
+    @Transactional
     public void deleteBow(long id) {
         logger.warn("Deleting bow with id {}", id);
         bowRepository.deleteById(id);

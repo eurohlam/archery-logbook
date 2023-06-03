@@ -12,7 +12,7 @@
 	<artifactId>archery-logbook</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>archery-logbook</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Archery logbook API</description>
 
 	<properties>
 		<java.version>17</java.version>
@@ -35,7 +35,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.24</version>
+			<version>1.18.26</version>
 			<scope>provided</scope>
 		</dependency>
 

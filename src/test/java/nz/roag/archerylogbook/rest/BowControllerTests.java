@@ -37,7 +37,7 @@ public class BowControllerTests {
 
     private Archer archer;
     private Bow bow;
-    private final String json = """
+    private final String bowJson = """
                 {
                     "id":0,
                     "archerId":1,
@@ -52,7 +52,7 @@ public class BowControllerTests {
                     "distanceSettingsList":[]
                 }
                 """;
-    private final String dsJson = """
+    private final String distanceSettingsJson = """
             {
                 "distance": "50", 
                 "sight": "12",
@@ -90,7 +90,7 @@ public class BowControllerTests {
         mvc.perform(get("/archers/1/bows"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
-                .andExpect(content().json("[" + json + "]"));
+                .andExpect(content().json("[" + bowJson + "]"));
     }
 
     @Test
@@ -101,7 +101,7 @@ public class BowControllerTests {
         mvc.perform(get("/archers/1/bows/0"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
-                .andExpect(content().json(json));
+                .andExpect(content().json(bowJson));
     }
 
     @Test
@@ -111,7 +111,7 @@ public class BowControllerTests {
 
         mvc.perform(post("/archers/1/bows/")
                         .contentType("application/json")
-                        .content(json))
+                        .content(bowJson))
                 .andExpect(status().isOk());
     }
 
@@ -128,7 +128,18 @@ public class BowControllerTests {
 
         mvc.perform(put("/archers/1/bows/1/")
                         .contentType("application/json")
-                        .content(dsJson))
+                        .content(distanceSettingsJson))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void updateBow() throws Exception{
+        given(bowRepository.findById(anyLong()))
+                .willReturn(Optional.of(bow));
+
+        mvc.perform(post("/archers/1/bows/1/")
+                        .contentType("application/json")
+                        .content(bowJson))
                 .andExpect(status().isOk());
     }
 }

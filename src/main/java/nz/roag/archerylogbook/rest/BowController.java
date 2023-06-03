@@ -54,6 +54,17 @@ public class BowController {
         }
     }
 
+    @PostMapping("/{bowId}/")
+    public ResponseEntity<?> updateBow(@RequestBody Bow bow) {
+        try {
+            bowService.updateBow(bow);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            logger.error(e.getMessage(), e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @PutMapping("/{bowId}/")
     public ResponseEntity<?> addDistanceSettings(@RequestBody DistanceSettings distanceSettings, @PathVariable long bowId) {
         try {
