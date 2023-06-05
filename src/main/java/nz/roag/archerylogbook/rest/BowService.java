@@ -45,9 +45,9 @@ public class BowService {
     }
 
     @Transactional
-    public void updateBow(Bow bow) {
-        logger.debug("Updating bow data {} for bowId={}", bow, bow.getId());
-        Bow storedBow = bowRepository.findById(bow.getId()).orElseThrow(() -> new NoSuchElementException("Bow not found. bowId=" + bow.getId()));
+    public void updateBow(long bowId, Bow bow) {
+        logger.debug("Updating bow data {} for bowId={}", bow, bowId);
+        Bow storedBow = bowRepository.findById(bowId).orElseThrow(() -> new NoSuchElementException("Bow not found. bowId=" + bowId));
         storedBow.setName(bow.getName());
         storedBow.setType(bow.getType());
         storedBow.setPoundage(bow.getPoundage());
@@ -87,7 +87,7 @@ public class BowService {
                     .orElseThrow(
                             () -> new NoSuchElementException("Distance not found. bowId=" + bowId + "; distance=" + distanceSettings.getDistance()));
             ds.setSight(distanceSettings.getSight());
-            ds.setTested(distanceSettings.isTested());
+            ds.setIsTested(distanceSettings.getIsTested());
         } else {
             bow.getDistanceSettingsList().add(distanceSettings);
         }

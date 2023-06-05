@@ -55,9 +55,9 @@ public class BowController {
     }
 
     @PostMapping("/{bowId}/")
-    public ResponseEntity<?> updateBow(@RequestBody Bow bow) {
+    public ResponseEntity<?> updateBow(@PathVariable long bowId, @RequestBody Bow bow) {
         try {
-            bowService.updateBow(bow);
+            bowService.updateBow(bowId, bow);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
             logger.error(e.getMessage(), e);

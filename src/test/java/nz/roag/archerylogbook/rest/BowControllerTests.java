@@ -52,13 +52,6 @@ public class BowControllerTests {
                     "distanceSettingsList":[]
                 }
                 """;
-    private final String distanceSettingsJson = """
-            {
-                "distance": "50", 
-                "sight": "12",
-                "isTested": true
-            }
-            """;
 
     @BeforeEach
     void beforeEach() {
@@ -126,6 +119,13 @@ public class BowControllerTests {
         given(bowRepository.findById(anyLong()))
                 .willReturn(Optional.of(bow));
 
+        var distanceSettingsJson = """
+            {
+                "distance": "50", 
+                "sight": "12",
+                "isTested": true
+            }
+            """;
         mvc.perform(put("/archers/1/bows/1/")
                         .contentType("application/json")
                         .content(distanceSettingsJson))

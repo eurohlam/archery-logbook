@@ -26,7 +26,7 @@ public class DistanceSettings implements Comparable<DistanceSettings> {
 
     @Getter @Setter
     @Column(nullable = false)
-    private boolean isTested = false;
+    private Boolean isTested = false;
 
     @Override
     public String toString() {
