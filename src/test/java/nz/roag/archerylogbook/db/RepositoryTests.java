@@ -84,19 +84,19 @@ public class RepositoryTests {
 
         var ds1 = new DistanceSettings();
         ds1.setDistance(20);
-        ds1.setSight(6);
+        ds1.setSight("6");
         ds1.setBowId(storedBow.getId());
         ds1.setIsTested(true);
         storedBow.getDistanceSettingsList().add(ds1);
         var ds2 = new DistanceSettings();
         ds2.setDistance(10);
-        ds2.setSight(5);
+        ds2.setSight("5");
         ds2.setBowId(storedBow.getId());
         ds2.setIsTested(true);
         storedBow.getDistanceSettingsList().add(ds2);
         var ds3 = new DistanceSettings();
         ds3.setDistance(15);
-        ds3.setSight(5);
+        ds3.setSight("5");
         ds3.setBowId(storedBow.getId());
         ds3.setIsTested(true);
         storedBow.getDistanceSettingsList().add(ds3);

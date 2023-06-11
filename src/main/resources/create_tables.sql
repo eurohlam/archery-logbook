@@ -64,7 +64,7 @@ CREATE TABLE `archery_distance_settings` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `bow_id` bigint(20) NOT NULL,
   `distance` int(11) NOT NULL,
-  `sight` int(11) NOT NULL,
+  `sight` varchar(50) NOT NULL,
   `is_tested` char(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY (`id`),
   UNIQUE KEY `bow_id` (`bow_id`,`distance`),

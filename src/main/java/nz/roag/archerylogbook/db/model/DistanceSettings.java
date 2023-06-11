@@ -22,7 +22,7 @@ public class DistanceSettings implements Comparable<DistanceSettings> {
     private int distance;
     @Getter @Setter
     @Column(nullable = false)
-    private int sight;
+    private String sight;
 
     @Getter @Setter
     @Column(nullable = false)
@@ -30,7 +30,7 @@ public class DistanceSettings implements Comparable<DistanceSettings> {
 
     @Override
     public String toString() {
-        return String.format("{ distance: %s, sight: %d }", distance, sight);
+        return String.format("{ distance: %s, sight: %s }", distance, sight);
     }
 
     @Override

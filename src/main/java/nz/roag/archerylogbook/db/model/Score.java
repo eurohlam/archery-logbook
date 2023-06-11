@@ -71,6 +71,6 @@ public class Score {
 
     @Override
     public String toString() {
-        return String.format("{ id: %d, scoreDate: %s, ends: %d, sum: %d, avg: %s }", getId(), getScoreDate(), getEndsCount(), getSum(), getAvg());
+        return String.format("{ id: %d, scoreDate: %s, match: %s, ends: %d, sum: %d, avg: %s }", getId(), getScoreDate(), getMatch(), getEndsCount(), getSum(), getAvg());
     }
 }
