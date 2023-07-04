@@ -64,4 +64,26 @@ public class ArcherService {
         archerRepository.deleteById(id);
     }
 
+    @Transactional
+    public void updateArcher(long archerId, Archer archer) {
+        logger.info("Updating an archer {}", archer);
+        var storedArcher = archerRepository.findById(archerId).orElseThrow(() -> new NoSuchElementException("Archer not found. archerId=" + archerId));
+        storedArcher.setEmail(archer.getEmail());
+        storedArcher.setFirstName(archer.getFirstName());
+        storedArcher.setLastName(archer.getLastName());
+
+        if (archer.getClubName() != null) {
+            Club club = clubRepository.findFirstByName(archer.getClubName());
+            if (club == null) {
+                Club newClub = new Club();
+                newClub.setName(archer.getClubName());
+                newClub.setCity(archer.getCity());
+                newClub.setCountry(archer.getCountry());
+                club = clubRepository.save(newClub);
+            }
+            storedArcher.setClubId(club.getId());
+        }
+        archerRepository.save(storedArcher);
+    }
+
 }

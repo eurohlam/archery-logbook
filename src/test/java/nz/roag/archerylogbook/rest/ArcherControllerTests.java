@@ -1,6 +1,7 @@
 package nz.roag.archerylogbook.rest;
 
 import nz.roag.archerylogbook.db.ArcherRepository;
+import nz.roag.archerylogbook.db.ClubRepository;
 import nz.roag.archerylogbook.db.model.Archer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,9 +40,9 @@ public class ArcherControllerTests {
                     "clubId":11,
                     "bowList":[],
                     "scoreList":[],
-                    "clubName":null,
-                    "country":null,
-                    "city":null
+                    "clubName":"Thieves",
+                    "country":"England",
+                    "city":"Nottingham"
                 }
                 """;
 
@@ -53,6 +54,9 @@ public class ArcherControllerTests {
         archer.setLastName("Hood");
         archer.setEmail("robin@hood.arch");
         archer.setClubId(11L);
+        archer.setClubName("Thieves");
+        archer.setCountry("England");
+        archer.setCity("Nottingham");
     }
 
     @Test
@@ -102,4 +106,14 @@ public class ArcherControllerTests {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void updateArcher() throws Exception {
+        given(archerRepository.findById(anyLong()))
+                .willReturn(Optional.of(archer));
+
+        mvc.perform(post("/archers/1/")
+                        .contentType("application/json")
+                        .content(json))
+                .andExpect(status().isOk());
+    }
 }

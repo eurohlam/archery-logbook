@@ -45,4 +45,14 @@ public class ArcherController {
     public void deleteArcher(@PathVariable long id) {
         archerService.deleteArcher(id);
     }
+
+    @PostMapping("/{id}/")
+    public ResponseEntity<?> updateArcher(@PathVariable long id, @RequestBody Archer archer) {
+        try {
+            archerService.updateArcher(id, archer);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }
