@@ -3,11 +3,11 @@ archery-logbook
 
 ## Overview
 
-This is a springboot based REST API that helps to build a back-end for [Archery Logbook Project](https://roundkick.nz/)
+This is a springboot based REST API that helps to build a back-end for [Archer's Log Book](https://roundkick.nz/) project
 
 ## Project
 
-This API is a part of a free project [Archery Logbook](https://roundkick.nz/).  
+This API is a part of a free project [Archer's Log Book](https://roundkick.nz/).  
 Archery Logbook helps archers to manage their scores, bows and overall progress.
 
 ## How to build
