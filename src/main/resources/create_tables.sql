@@ -5,7 +5,17 @@ DROP TABLE IF EXISTS `archery_distance_settings`;
 DROP TABLE IF EXISTS `archery_bow`;
 DROP TABLE IF EXISTS `archery_archer`;
 DROP TABLE IF EXISTS `archery_club`;
+DROP TABLE IF EXISTS `archery_api_subscriber`;
 
+CREATE TABLE `archery_api_subscriber` (
+  `access_key` varchar(20) NOT NULL,
+  `secret_key` varchar(50) NOT NULL,
+  PRIMARY KEY (`access_key`),
+  UNIQUE KEY `secret_key` (`secret_key`)
+);
+
+INSERT INTO `archery_api_subscriber` (`access_key`, `secret_key`) VALUES
+('testAccessKey', 'testSecret');
 
 CREATE TABLE `archery_club` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -80,7 +90,7 @@ INSERT INTO `archery_distance_settings` (`id`, `bow_id`, `distance`, `sight`, `i
 CREATE TABLE `archery_score` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `archer_id` bigint(20) NOT NULL,
-  `bow_id` bigint(20),
+  `bow_id` bigint(20) NOT NULL,
   `score_date` datetime NOT NULL DEFAULT current_timestamp(),
   `match` varchar(50) NOT NULL,
   `comment` longtext,

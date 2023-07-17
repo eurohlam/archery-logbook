@@ -16,8 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -25,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class BowControllerTests {
+class BowControllerTests extends AbstractControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -55,6 +54,8 @@ public class BowControllerTests {
 
     @BeforeEach
     void beforeEach() {
+        init();
+
         archer = new Archer();
         archer.setId(1L);
         archer.setFirstName("Robin");
@@ -71,16 +72,21 @@ public class BowControllerTests {
         bow.setRiserModel("Test riser");
 
         archer.setBowList(List.of(bow));
+
+        //Common mocks
+        given(archerRepository.findById(anyLong()))
+                .willReturn(Optional.of(archer));
+        given(bowRepository.findById(anyLong()))
+                .willReturn(Optional.of(bow));
     }
 
     @Test
     void listAllBows() throws Exception{
-        given(archerRepository.findById(anyLong()))
-                .willReturn(Optional.of(archer));
         given(bowRepository.findByArcherId(anyLong(), any(Sort.class)))
                 .willReturn(List.of(bow));
 
-        mvc.perform(get("/archers/1/bows"))
+        mvc.perform(get("/archers/1/bows")
+                        .headers(getHttpHeaders("/archers/1/bows")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(content().json("[" + bowJson + "]"));
@@ -88,10 +94,8 @@ public class BowControllerTests {
 
     @Test
     void getBow() throws Exception{
-        given(bowRepository.findById(anyLong()))
-                .willReturn(Optional.of(bow));
-
-        mvc.perform(get("/archers/1/bows/0"))
+        mvc.perform(get("/archers/1/bows/0")
+                        .headers(getHttpHeaders("/archers/1/bows/0")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(content().json(bowJson));
@@ -99,10 +103,8 @@ public class BowControllerTests {
 
     @Test
     void addBow() throws Exception{
-        given(archerRepository.findById(anyLong()))
-                .willReturn(Optional.of(archer));
-
         mvc.perform(post("/archers/1/bows/")
+                        .headers(getHttpHeaders("/archers/1/bows/"))
                         .contentType("application/json")
                         .content(bowJson))
                 .andExpect(status().isOk());
@@ -110,15 +112,13 @@ public class BowControllerTests {
 
     @Test
     void deleteBow() throws Exception{
-        mvc.perform(delete("/archers/1/bows/0"))
+        mvc.perform(delete("/archers/1/bows/0")
+                        .headers(getHttpHeaders("/archers/1/bows/0")))
                 .andExpect(status().isOk());
     }
 
     @Test
     void addDistanceSettings() throws Exception{
-        given(bowRepository.findById(anyLong()))
-                .willReturn(Optional.of(bow));
-
         var distanceSettingsJson = """
             {
                 "distance": "50", 
@@ -127,6 +127,7 @@ public class BowControllerTests {
             }
             """;
         mvc.perform(put("/archers/1/bows/1/")
+                        .headers(getHttpHeaders("/archers/1/bows/1/"))
                         .contentType("application/json")
                         .content(distanceSettingsJson))
                 .andExpect(status().isOk());
@@ -134,10 +135,8 @@ public class BowControllerTests {
 
     @Test
     void updateBow() throws Exception{
-        given(bowRepository.findById(anyLong()))
-                .willReturn(Optional.of(bow));
-
         mvc.perform(post("/archers/1/bows/1/")
+                        .headers(getHttpHeaders("/archers/1/bows/1/"))
                         .contentType("application/json")
                         .content(bowJson))
                 .andExpect(status().isOk());

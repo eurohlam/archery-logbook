@@ -23,7 +23,7 @@ public class Score {
     private long archerId;
 
     @Getter @Setter
-    @Column(name = "bow_id")
+    @Column(name = "bow_id", nullable = false)
     private Long bowId;
 
     @Getter
@@ -32,7 +32,7 @@ public class Score {
     private Bow bow;
 
     @Getter @Setter
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private Date scoreDate = new Date();
 
     @Getter @Setter @NonNull

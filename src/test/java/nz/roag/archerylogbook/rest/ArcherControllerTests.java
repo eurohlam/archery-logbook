@@ -1,7 +1,6 @@
 package nz.roag.archerylogbook.rest;
 
 import nz.roag.archerylogbook.db.ArcherRepository;
-import nz.roag.archerylogbook.db.ClubRepository;
 import nz.roag.archerylogbook.db.model.Archer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,15 +14,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class ArcherControllerTests {
+class ArcherControllerTests extends AbstractControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -48,6 +46,8 @@ public class ArcherControllerTests {
 
     @BeforeEach
     void beforeEach() {
+        init();
+
         archer = new Archer();
         archer.setId(1L);
         archer.setFirstName("Robin");
@@ -57,14 +57,19 @@ public class ArcherControllerTests {
         archer.setClubName("Thieves");
         archer.setCountry("England");
         archer.setCity("Nottingham");
+
+
     }
+
+
 
     @Test
     void listAllArchersTest() throws Exception {
         given(archerRepository.findAll(any(Sort.class)))
                 .willReturn(List.of(archer));
 
-        mvc.perform(get("/archers"))
+        mvc.perform(get("/archers")
+                        .headers(getHttpHeaders("/archers")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(content().json("[" + json + "]"));
@@ -75,7 +80,8 @@ public class ArcherControllerTests {
         given(archerRepository.findByClubIdOrderByLastNameAsc(anyLong()))
                 .willReturn(List.of(archer));
 
-        mvc.perform(get("/archers?clubId=222"))
+        mvc.perform(get("/archers?clubId=222")
+                        .headers(getHttpHeaders("/archers")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(content().json("[" + json + "]"));
@@ -86,7 +92,8 @@ public class ArcherControllerTests {
         given(archerRepository.findById(anyLong()))
                 .willReturn(Optional.of(archer));
 
-        mvc.perform(get("/archers/111"))
+        mvc.perform(get("/archers/111")
+                        .headers(getHttpHeaders("/archers/111")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(content().json(json));
@@ -95,6 +102,7 @@ public class ArcherControllerTests {
     @Test
     void addArcher() throws Exception {
         mvc.perform(post("/archers/")
+                        .headers(getHttpHeaders("/archers/"))
                         .contentType("application/json")
                         .content(json))
                 .andExpect(status().isOk());
@@ -102,7 +110,8 @@ public class ArcherControllerTests {
 
     @Test
     void deleteArcher() throws Exception {
-        mvc.perform(delete("/archers/111"))
+        mvc.perform(delete("/archers/111")
+                        .headers(getHttpHeaders("/archers/111")))
                 .andExpect(status().isOk());
     }
 
@@ -112,6 +121,7 @@ public class ArcherControllerTests {
                 .willReturn(Optional.of(archer));
 
         mvc.perform(post("/archers/1/")
+                        .headers(getHttpHeaders("/archers/1/"))
                         .contentType("application/json")
                         .content(json))
                 .andExpect(status().isOk());
