@@ -1,9 +1,6 @@
 package nz.roag.archerylogbook.rest;
 
-import nz.roag.archerylogbook.db.ArcherRepository;
-import nz.roag.archerylogbook.db.EndRepository;
-import nz.roag.archerylogbook.db.RoundRepository;
-import nz.roag.archerylogbook.db.ScoreRepository;
+import nz.roag.archerylogbook.db.*;
 import nz.roag.archerylogbook.db.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,8 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -29,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class ScoreControllerTests {
+class ScoreControllerTests extends AbstractControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -81,6 +77,8 @@ public class ScoreControllerTests {
 
     @BeforeEach
     void beforeEach() throws Exception {
+        init();
+
         archer = new Archer();
         archer.setId(1L);
         archer.setFirstName("Robin");
@@ -105,16 +103,18 @@ public class ScoreControllerTests {
         round.setRoundScore((short) 10);
         end.setRounds(List.of(round));
         score.setEnds(List.of(end));
-    }
 
-    @Test
-    void listAllScores() throws Exception {
+        //Common mocks
         given(archerRepository.findById(anyLong()))
                 .willReturn(Optional.of(archer));
         given(scoreRepository.findByArcherId(anyLong(), any(Sort.class)))
                 .willReturn(List.of(score));
+    }
 
-        mvc.perform(get("/archers/1/scores"))
+    @Test
+    void listAllScores() throws Exception {
+        mvc.perform(get("/archers/1/scores")
+                        .headers(getHttpHeaders("/archers/1/scores")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(content().json("[" + json + "]"));
@@ -122,12 +122,11 @@ public class ScoreControllerTests {
 
     @Test
     void getScore() throws Exception {
-        given(archerRepository.findById(anyLong()))
-                .willReturn(Optional.of(archer));
         given(scoreRepository.findById(anyLong()))
                 .willReturn(Optional.of(score));
 
-        mvc.perform(get("/archers/1/scores/1"))
+        mvc.perform(get("/archers/1/scores/1")
+                        .headers(getHttpHeaders("/archers/1/scores/1")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(content().json(json));
@@ -135,14 +134,13 @@ public class ScoreControllerTests {
 
     @Test
     void addScore() throws Exception{
-        given(archerRepository.findById(anyLong()))
-                .willReturn(Optional.of(archer));
         given(scoreRepository.save(any()))
                 .willReturn(score);
         given(endRepository.save(any()))
                 .willReturn(end);
 
         mvc.perform(post("/archers/1/scores/")
+                        .headers(getHttpHeaders("/archers/1/scores/"))
                         .contentType("application/json")
                         .content(json))
                 .andExpect(status().isOk());
@@ -150,7 +148,8 @@ public class ScoreControllerTests {
 
     @Test
     void deleteScore() throws Exception {
-        mvc.perform(delete("/archers/1/scores/1"))
+        mvc.perform(delete("/archers/1/scores/1")
+                        .headers(getHttpHeaders("/archers/1/scores/1")))
                 .andExpect(status().isOk());
     }
 }

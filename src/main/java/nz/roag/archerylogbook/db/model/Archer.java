@@ -17,12 +17,14 @@ public class Archer {
     private long id;
 
     @Getter @Setter
+    @Column(nullable = false)
     private String firstName;
 
     @Getter @Setter
     private String lastName;
 
     @Getter @Setter
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Getter @Setter

@@ -15,7 +15,7 @@ import java.util.List;
 
 
 @DataJpaTest
-public class RepositoryTests {
+class RepositoryTests {
 
     @Autowired
     private TestEntityManager entityManager;
@@ -111,12 +111,23 @@ public class RepositoryTests {
 
     @Test
     void scoreRepositoryTest() {
+        var bow = new Bow();
+        bow.setName("Test bow");
+        bow.setType(Bow.Type.RECURVE);
+        bow.setLevel(Bow.Level.INTERMEDIATE);
+        bow.setPoundage("44-44");
+        bow.setRiserModel("test riser");
+        bow.setLimbsModel("test limbs");
+        bow.setArcherId(archerId);
+        var storedBow = entityManager.persist(bow);
+
         var score = new Score();
         score.setArcherId(archerId);
         score.setMatch("30");
         score.setCity("Nottingham");
         score.setScoreDate(new Date());
         score.setCountry("England");
+        score.setBowId(storedBow.getId());
         var storedScore = entityManager.persist(score);
 
         var end = new End();
