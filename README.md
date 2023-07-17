@@ -35,9 +35,9 @@ The API uses HMAC (Hash-Based Message Authentication Codes) authentication. Clie
 a concatenation of `path + key + nonce + timestamp`
 
 
-    //Example of HMAC signature for PHP
+        //Example of HMAC signature for PHP
 
-    // Build the signature string from the parameters.
-    $signatureString = $path . $accessKey . $nonce . $timestamp;
-    // Create the HMAC SHA-256 Hash from the signature string.
-    $signature = base64_encode(hash_hmac('sha256', $signatureString, $secret, true));
+        // Build the signature string from the parameters.
+        $signatureString = $path . $accessKey . $nonce . $timestamp;
+        // Create the HMAC SHA-256 Hash from the signature string.
+        $signature = base64_encode(hash_hmac('sha256', $signatureString, $secret, true));
