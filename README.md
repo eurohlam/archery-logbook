@@ -41,3 +41,7 @@ a concatenation of `path + key + nonce + timestamp`
     $signatureString = $path . $accessKey . $nonce . $timestamp;
     // Create the HMAC SHA-256 Hash from the signature string.
     $signature = base64_encode(hash_hmac('sha256', $signatureString, $secret, true));
+
+## API
+
+API specification is available in OpenAPI format in the file `archery-logbook-api.yaml`
