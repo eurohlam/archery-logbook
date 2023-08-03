@@ -1,14 +1,20 @@
 package nz.roag.archerylogbook.rest;
 
-import nz.roag.archerylogbook.db.*;
-import nz.roag.archerylogbook.db.model.*;
+import nz.roag.archerylogbook.db.ArcherRepository;
+import nz.roag.archerylogbook.db.EndRepository;
+import nz.roag.archerylogbook.db.RoundRepository;
+import nz.roag.archerylogbook.db.ScoreRepository;
+import nz.roag.archerylogbook.db.model.Archer;
+import nz.roag.archerylogbook.db.model.End;
+import nz.roag.archerylogbook.db.model.Round;
+import nz.roag.archerylogbook.db.model.Score;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
@@ -17,7 +23,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -107,13 +114,20 @@ class ScoreControllerTests extends AbstractControllerTest {
         //Common mocks
         given(archerRepository.findById(anyLong()))
                 .willReturn(Optional.of(archer));
-        given(scoreRepository.findByArcherId(anyLong(), any(Sort.class)))
-                .willReturn(List.of(score));
     }
 
     @Test
     void listAllScores() throws Exception {
+        given(scoreRepository.findByArcherId(anyLong(), any(Pageable.class)))
+                .willReturn(List.of(score));
+
         mvc.perform(get("/archers/1/scores")
+                        .headers(getHttpHeaders("/archers/1/scores")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(content().json("[" + json + "]"));
+
+        mvc.perform(get("/archers/1/scores?page=0&size=5")
                         .headers(getHttpHeaders("/archers/1/scores")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))

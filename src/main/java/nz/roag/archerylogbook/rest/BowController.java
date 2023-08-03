@@ -76,8 +76,8 @@ public class BowController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteBow(@PathVariable long archerId, @PathVariable long id) {
-        bowService.deleteBow(id);
+    @DeleteMapping("/{bowId}")
+    public void deleteBow(@PathVariable long archerId, @PathVariable long bowId) {
+        bowService.deleteBow(bowId);
     }
 }
