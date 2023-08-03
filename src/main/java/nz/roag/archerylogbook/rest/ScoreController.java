@@ -21,9 +21,11 @@ public class ScoreController {
     private ScoreService scoreService;
 
     @GetMapping("")
-    public ResponseEntity<List<Score>> listAllScores(@PathVariable long archerId) {
+    public ResponseEntity<List<Score>> listAllScores(@PathVariable long archerId,
+                                                     @RequestParam(name = "page",defaultValue = "0") int page,
+                                                     @RequestParam(name = "size", defaultValue = "20") int size) {
         try {
-            List<Score> scores = scoreService.listAllScores(archerId);
+            List<Score> scores = scoreService.listAllScores(archerId, page, size);
             return new ResponseEntity<>(scores, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             logger.error(e.getMessage(), e);
@@ -31,10 +33,10 @@ public class ScoreController {
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Score> getScore(@PathVariable long id) {
+    @GetMapping("/{scoreId}")
+    public ResponseEntity<Score> getScore(@PathVariable long scoreId) {
         try {
-            Score score = scoreService.getScore(id);
+            Score score = scoreService.getScore(scoreId);
             return new ResponseEntity<>(score, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             logger.error(e.getMessage(), e);
@@ -53,8 +55,8 @@ public class ScoreController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteScore(@PathVariable long id) {
-        scoreService.deleteScore(id);
+    @DeleteMapping("/{scoreId}")
+    public void deleteScore(@PathVariable long scoreId) {
+        scoreService.deleteScore(scoreId);
     }
 }

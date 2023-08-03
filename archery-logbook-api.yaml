@@ -1,0 +1,823 @@
+openapi: 3.0.3
+info:
+  title: Archer's Log Book
+  description: |-
+    This is a springboot based REST API that helps to build a back-end for [Archer's Log Book](https://roundkick.nz) project
+    Archer's Log Book helps archers to manage their scores, bows and overall progress.
+    
+  license:
+    name: Apache 3.0
+    url: http://www.apache.org/licenses/LICENSE-3.0.html
+  version: 1.0.0
+servers:
+  - url: https://localhost:7878
+tags:
+  - name: clubs
+    description: management of archery clubs
+  - name: archers
+    description: management of archers
+  - name: bows
+    description: management of bows
+  - name: scores
+    description: management of scores
+
+paths:
+  /clubs:
+    get:
+      tags:
+        - clubs
+      summary: Get all archery clubs
+      description: Returns a list of clubs
+      operationId: listAllClubs
+      parameters:
+        - $ref: '#/components/parameters/key'
+        - $ref: '#/components/parameters/nonce'
+        - $ref: '#/components/parameters/timestamp'
+        - $ref: '#/components/parameters/signature'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Club'
+    post:
+      tags:
+        - clubs
+      summary: Add a new archery club
+      description: Add a new archery club
+      operationId: addClub
+      parameters:
+        - $ref: '#/components/parameters/key'
+        - $ref: '#/components/parameters/nonce'
+        - $ref: '#/components/parameters/timestamp'
+        - $ref: '#/components/parameters/signature'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Club'
+      responses:
+        '200':
+          description: successful operation
+
+  /clubs/{id}:
+    get:
+      tags:
+        - clubs
+      summary: Find club by ID
+      description: Returns a single club
+      operationId: getClub
+      parameters:
+        - $ref: '#/components/parameters/key'
+        - $ref: '#/components/parameters/nonce'
+        - $ref: '#/components/parameters/timestamp'
+        - $ref: '#/components/parameters/signature'
+        - name: id
+          in: path
+          description: ID of club to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Club'
+        '404':
+          description: Club not found
+    delete:
+      tags:
+        - clubs
+      summary: Deletes a club
+      description: delete a club
+      operationId: deleteClub
+      parameters:
+        - $ref: '#/components/parameters/key'
+        - $ref: '#/components/parameters/nonce'
+        - $ref: '#/components/parameters/timestamp'
+        - $ref: '#/components/parameters/signature'
+        - name: id
+          in: path
+          description: Club id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+
+  /archers:
+    get:
+      tags:
+        - archers
+      summary: Get all archers
+      description: Returns a list of archers
+      operationId: listAllArchers
+      parameters:
+        - $ref: '#/components/parameters/key'
+        - $ref: '#/components/parameters/nonce'
+        - $ref: '#/components/parameters/timestamp'
+        - $ref: '#/components/parameters/signature'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Archer'
+    post:
+      tags:
+        - archers
+      summary: Add a new archer
+      description: Add a new archer
+      operationId: addArcher
+      parameters:
+        - $ref: '#/components/parameters/key'
+        - $ref: '#/components/parameters/nonce'
+        - $ref: '#/components/parameters/timestamp'
+        - $ref: '#/components/parameters/signature'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Archer'
+      responses:
+        '200':
+          description: successful operation
+
+  /archers/{id}:
+    get:
+      tags:
+        - archers
+      summary: Find archer by ID
+      description: Returns a single archer
+      operationId: getArcher
+      parameters:
+        - $ref: '#/components/parameters/key'
+        - $ref: '#/components/parameters/nonce'
+        - $ref: '#/components/parameters/timestamp'
+        - $ref: '#/components/parameters/signature'
+        - name: id
+          in: path
+          description: ID of archer to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Archer'
+        '404':
+          description: Archer not found
+    delete:
+      tags:
+        - archers
+      summary: Deletes an archer
+      description: delete an archer
+      operationId: deleteArcher
+      parameters:
+        - $ref: '#/components/parameters/key'
+        - $ref: '#/components/parameters/nonce'
+        - $ref: '#/components/parameters/timestamp'
+        - $ref: '#/components/parameters/signature'
+        - name: id
+          in: path
+          description: Archer id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+
+  /archers/{id}/:
+    post:
+      tags:
+        - archers
+      summary: Update an archer
+      description: Update existing archer
+      operationId: updateArcher
+      parameters:
+        - $ref: '#/components/parameters/key'
+        - $ref: '#/components/parameters/nonce'
+        - $ref: '#/components/parameters/timestamp'
+        - $ref: '#/components/parameters/signature'
+        - name: id
+          in: path
+          description: Archer id to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Archer'
+      responses:
+        '200':
+          description: successful operation
+        '404':
+          description: Archer not found
+
+  /archers/{archerId}/bows:
+    get:
+      tags:
+        - bows
+      summary: Get all bows for current archer
+      description: Returns a list of bows for current archer
+      operationId: listAllBows
+      parameters:
+        - $ref: '#/components/parameters/key'
+        - $ref: '#/components/parameters/nonce'
+        - $ref: '#/components/parameters/timestamp'
+        - $ref: '#/components/parameters/signature'
+        - name: archerId
+          in: path
+          description: Archer ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Bow'
+        '404':
+          description: Archer not found
+
+  /archers/{archerId}/bows/:
+    post:
+      tags:
+        - bows
+      summary: Add a new bow for archer
+      description: Add a new bow for archer
+      operationId: addBow
+      parameters:
+        - $ref: '#/components/parameters/key'
+        - $ref: '#/components/parameters/nonce'
+        - $ref: '#/components/parameters/timestamp'
+        - $ref: '#/components/parameters/signature'
+        - name: archerId
+          in: path
+          description: Archer ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bow'
+      responses:
+        '200':
+          description: successful operation
+        '404':
+          description: Archer not found
+
+  /archers/{archerId}/bows/{bowId}:
+    get:
+      tags:
+        - bows
+      summary: Find bows by ID
+      description: Returns a single bow
+      operationId: getBow
+      parameters:
+        - $ref: '#/components/parameters/key'
+        - $ref: '#/components/parameters/nonce'
+        - $ref: '#/components/parameters/timestamp'
+        - $ref: '#/components/parameters/signature'
+        - name: archerId
+          in: path
+          description: Archer ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: bowId
+          in: path
+          description: Bow ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bow'
+        '404':
+          description: Archer not found
+    delete:
+      tags:
+        - bows
+      summary: Deletes a bow
+      description: delete a bow by ID
+      operationId: deleteBow
+      parameters:
+        - $ref: '#/components/parameters/key'
+        - $ref: '#/components/parameters/nonce'
+        - $ref: '#/components/parameters/timestamp'
+        - $ref: '#/components/parameters/signature'
+        - name: archerId
+          in: path
+          description: Archer ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: bowId
+          in: path
+          description: Bow ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+
+  /archers/{archerId}/bows/{bowId}/:
+    post:
+      tags:
+        - bows
+      summary: Update existing bow for archer
+      description: Update existing bow for archer
+      operationId: updateBow
+      parameters:
+        - $ref: '#/components/parameters/key'
+        - $ref: '#/components/parameters/nonce'
+        - $ref: '#/components/parameters/timestamp'
+        - $ref: '#/components/parameters/signature'
+        - name: archerId
+          in: path
+          description: Archer ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: bowId
+          in: path
+          description: Bow ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bow'
+      responses:
+        '200':
+          description: successful operation
+        '404':
+          description: Bow not found
+    put:
+      tags:
+        - bows
+      summary: Add or update DistanceSettings for existing bow
+      description: Add or update DistanceSettings for existing bow
+      operationId: addDistanceSettings
+      parameters:
+        - $ref: '#/components/parameters/key'
+        - $ref: '#/components/parameters/nonce'
+        - $ref: '#/components/parameters/timestamp'
+        - $ref: '#/components/parameters/signature'
+        - name: archerId
+          in: path
+          description: Archer ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: bowId
+          in: path
+          description: Bow ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DistanceSettings'
+      responses:
+        '200':
+          description: successful operation
+        '404':
+          description: Bow not found
+
+  /archers/{archerId}/scores:
+    get:
+      tags:
+        - scores
+      summary: Get all scores for current archer
+      description: Returns a list of scores for current archer
+      operationId: listAllScores
+      parameters:
+        - $ref: '#/components/parameters/key'
+        - $ref: '#/components/parameters/nonce'
+        - $ref: '#/components/parameters/timestamp'
+        - $ref: '#/components/parameters/signature'
+        - name: archerId
+          in: path
+          description: Archer ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: size
+          in: query
+          description: Number of element in a page
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 5
+            maximum: 100
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Score'
+        '404':
+          description: Archer not found
+
+  /archers/{archerId}/scores/:
+    post:
+      tags:
+        - scores
+      summary: Add a new score for current archer
+      description: Add a new score for current archer
+      operationId: addScore
+      parameters:
+        - $ref: '#/components/parameters/key'
+        - $ref: '#/components/parameters/nonce'
+        - $ref: '#/components/parameters/timestamp'
+        - $ref: '#/components/parameters/signature'
+        - name: archerId
+          in: path
+          description: Archer ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Score'
+      responses:
+        '200':
+          description: successful operation
+        '404':
+          description: Archer not found
+
+  /archers/{archerId}/scores/{scoreId}:
+    get:
+      tags:
+        - scores
+      summary: Get score by ID
+      description: Returns a single score for current archer
+      operationId: getScore
+      parameters:
+        - $ref: '#/components/parameters/key'
+        - $ref: '#/components/parameters/nonce'
+        - $ref: '#/components/parameters/timestamp'
+        - $ref: '#/components/parameters/signature'
+        - name: archerId
+          in: path
+          description: Archer ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: scoreId
+          in: path
+          description: Score ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Score'
+        '404':
+          description: Score not found
+    delete:
+      tags:
+        - scores
+      summary: Delete score by ID
+      description: Delete score
+      operationId: deleteScore
+      parameters:
+        - $ref: '#/components/parameters/key'
+        - $ref: '#/components/parameters/nonce'
+        - $ref: '#/components/parameters/timestamp'
+        - $ref: '#/components/parameters/signature'
+        - name: archerId
+          in: path
+          description: Archer ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: scoreId
+          in: path
+          description: Score ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+
+
+components:
+  parameters:
+    key:
+      in: header
+      name: key
+      schema:
+        type: string
+      example: "14524gtfd78"
+      required: true
+      description: unique key of client provided by API-owner. API-owner provides unique combination key/secret for every API-client
+    nonce:
+      in: header
+      name: nonce
+      schema:
+        type: string
+      example: "1561-3783-dgh536"
+      required: true
+      description: unique string generated by client for every API-call
+    timestamp:
+      in: header
+      name: timestamp
+      schema:
+        type: string
+      example: "20230803124567888"
+      required: true
+      description: timestamp for API-call
+    signature:
+      in: header
+      name: signature
+      schema:
+        type: string
+      example: ""
+      required: true
+      description: "base64 encoded string of HMAC encrypted signature with SHA-256 algorithm. Signature before encryption is made up as
+a concatenation of `path + key + nonce + timestamp`"
+
+  schemas:
+    Club:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Archery club"
+        country:
+          type: string
+          example: "England"
+        city:
+          type: string
+          example: "Nottingham"
+        url:
+          type: string
+          example: "https://archeryclub.uk"
+    Archer:
+      required:
+        - firstName
+        - email
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        firstName:
+          type: string
+          example: "Robin"
+        lastName:
+          type: string
+          example: "Hood"
+        email:
+          type: string
+          format: email
+          example: "robin@hood.uk"
+        club_id:
+          type: number
+          example: 1
+        club_name:
+          type: string
+          example: "Archery Club"
+        country:
+          type: string
+          example: "England"
+        city:
+          type: string
+          example: "Nottingham"
+        bowList:
+          type: array
+          items:
+            $ref: '#/components/schemas/Bow'
+        scoreList:
+          type: array
+          items:
+            $ref: '#/components/schemas/Score'
+    Bow:
+      required:
+        - archerId
+        - name
+        - type
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        archerId:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "My bow"
+        type:
+          type: string
+          example: "RECURVE"
+          enum:
+            - RECURVE
+            - COMPOUND
+            - TRADITIONAL
+        level:
+          type: string
+          example: "ADVANCED"
+          enum:
+            - BEGINNER
+            - INTERMEDIATE
+            - ADVANCED
+        poundage:
+          type: string
+          example: "28-30"
+        compoundModel:
+          type: string
+          example: "Compound"
+        riserModel:
+          type: string
+          example: "AXIOM"
+        limbsModel:
+          type: string
+          example: "AXIOM"
+        traditionalModel:
+          type: string
+          example: "Black"
+        distanceSettingsList:
+          type: array
+          items:
+            $ref: '#/components/schemas/DistanceSettings'
+    DistanceSettings:
+      required:
+        - bowId
+        - distance
+        - sight
+        - isTested
+      type: object
+      properties:
+        bowId:
+          type: integer
+          example: 1
+        distance:
+          type: number
+          example: 20
+        sight:
+          type: string
+          example: "53 mm"
+        isTested:
+          type: boolean
+    Score:
+      required:
+        - archerID
+        - bowId
+        - scoreDate
+        - match
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        archerId:
+          type: integer
+          example: 1
+        bowId:
+          type: integer
+          example: 1
+        scoreDate:
+          type: string
+          format: dateTime
+          example: "10/06/2023T23:01:18,000"
+        match:
+          type: string
+          example: "30"
+        comment:
+          type: string
+        country:
+          type: string
+          example: "England"
+        city:
+          type: string
+          example: "Nottingham"
+        ends:
+          type: array
+          items:
+            $ref: '#/components/schemas/End'
+    End:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        scoreId:
+          type: integer
+          example: 1
+        endNumber:
+          type: integer
+          example: 1
+          minimum: 1
+        rounds:
+          type: array
+          items:
+            $ref: '#/components/schemas/Round'
+    Round:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        endId:
+          type: integer
+          example: 1
+        roundNumber:
+          type: integer
+          example: 3
+          minimum: 1
+          maximum: 6
+        roundScore:
+          type: integer
+          example: 8
+          minimum: 0
+          maximum: 10
+
+
+
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: signature
+      in: header
+
+security:
+  - api_key: []

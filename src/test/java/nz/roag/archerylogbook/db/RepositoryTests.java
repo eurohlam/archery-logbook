@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import java.util.Date;
@@ -149,5 +150,15 @@ class RepositoryTests {
         Assertions.assertEquals(1, scores.get(0).getEndsCount());
         Assertions.assertEquals(10, scores.get(0).getSum());
         Assertions.assertEquals(10, scores.get(0).getEnds().get(0).getRounds().get(0).getRoundScore());
+
+        scores = scoreRepository.findByArcherId(archerId, PageRequest.of(0,5, Sort.by("scoreDate").ascending()));
+        Assertions.assertEquals("30", scores.get(0).getMatch());
+        Assertions.assertEquals("Nottingham", scores.get(0).getCity());
+        Assertions.assertEquals(1, scores.get(0).getEndsCount());
+        Assertions.assertEquals(10, scores.get(0).getSum());
+        Assertions.assertEquals(10, scores.get(0).getEnds().get(0).getRounds().get(0).getRoundScore());
+
+        scores = scoreRepository.findByArcherId(archerId, PageRequest.of(2,5, Sort.by("scoreDate").ascending()));
+        Assertions.assertEquals(0, scores.size());
     }
 }
