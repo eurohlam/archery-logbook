@@ -127,11 +127,23 @@ class ScoreControllerTests extends AbstractControllerTest {
                 .andExpect(content().contentType("application/json"))
                 .andExpect(content().json("[" + json + "]"));
 
-        mvc.perform(get("/archers/1/scores?page=0&size=5")
+        mvc.perform(get("/archers/1/scores?page=0&size=20")
                         .headers(getHttpHeaders("/archers/1/scores")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(content().json("[" + json + "]"));
+
+        mvc.perform(get("/archers/1/scores?page=-1&size=20")
+                        .headers(getHttpHeaders("/archers/1/scores")))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(content().json("""
+                        {
+                            "status": "BAD_REQUEST",
+                            "errorMessage": "The value of page parameter can not be less then 0",
+                            "path": "/archers//archers/1/scores/scores"
+                        }
+                        """));
     }
 
     @Test
@@ -147,7 +159,7 @@ class ScoreControllerTests extends AbstractControllerTest {
     }
 
     @Test
-    void addScore() throws Exception{
+    void addScore() throws Exception {
         given(scoreRepository.save(any()))
                 .willReturn(score);
         given(endRepository.save(any()))

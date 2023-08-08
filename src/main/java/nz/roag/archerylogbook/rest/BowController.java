@@ -6,11 +6,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+
+import static nz.roag.archerylogbook.rest.ErrorMessage.getErrorJson;
 
 @RestController
 @RequestMapping("/archers/{archerId}/bows")
@@ -21,25 +24,33 @@ public class BowController {
     private BowService bowService;
 
     @GetMapping("")
-    public ResponseEntity<List<Bow>> listAllBows(@PathVariable long archerId) {
+    public ResponseEntity<?> listAllBows(@PathVariable long archerId) {
         try {
             List<Bow> bows = bowService.listAllBows(archerId);
             return new ResponseEntity<>(bows, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             logger.error(e.getMessage(), e);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(getErrorJson("NOT_FOUND",
+                            e.getMessage(),
+                            "/archers/" + archerId + "/bows"));
         }
 
     }
 
     @GetMapping("/{bowId}")
-    public ResponseEntity<Bow> getBow(@PathVariable long bowId) {
+    public ResponseEntity<?> getBow(@PathVariable long archerId, @PathVariable long bowId) {
         try {
             Bow bow = bowService.getBow(bowId);
             return new ResponseEntity<>(bow, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             logger.error(e.getMessage(), e);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(getErrorJson("NOT_FOUND",
+                            e.getMessage(),
+                            "/archers/" + archerId + "/bows/" + bowId));
         }
     }
 
@@ -50,29 +61,43 @@ public class BowController {
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
             logger.error(e.getMessage(), e);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(getErrorJson("NOT_FOUND",
+                            e.getMessage(),
+                            "/archers/" + archerId + "/bows/"));
         }
     }
 
     @PostMapping("/{bowId}/")
-    public ResponseEntity<?> updateBow(@PathVariable long bowId, @RequestBody Bow bow) {
+    public ResponseEntity<?> updateBow(@PathVariable long archerId, @PathVariable long bowId, @RequestBody Bow bow) {
         try {
             bowService.updateBow(bowId, bow);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
             logger.error(e.getMessage(), e);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(getErrorJson("NOT_FOUND",
+                            e.getMessage(),
+                            "/archers/" + archerId + "/bows/" + bowId + "/"));
         }
     }
 
     @PutMapping("/{bowId}/")
-    public ResponseEntity<?> addDistanceSettings(@RequestBody DistanceSettings distanceSettings, @PathVariable long bowId) {
+    public ResponseEntity<?> addDistanceSettings(@PathVariable long archerId,
+                                                 @RequestBody DistanceSettings distanceSettings,
+                                                 @PathVariable long bowId) {
         try {
             bowService.addDistanceSettings(bowId, distanceSettings);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
             logger.error(e.getMessage(), e);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(getErrorJson("NOT_FOUND",
+                            e.getMessage(),
+                            "/archers/" + archerId + "/bows/" + bowId + "/"));
         }
     }
 

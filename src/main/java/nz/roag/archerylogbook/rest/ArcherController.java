@@ -3,11 +3,14 @@ package nz.roag.archerylogbook.rest;
 import nz.roag.archerylogbook.db.model.Archer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+
+import static nz.roag.archerylogbook.rest.ErrorMessage.getErrorJson;
 
 @RestController
 @RequestMapping("/archers")
@@ -27,12 +30,16 @@ public class ArcherController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<Archer> getArcher(@PathVariable long id) {
+    public ResponseEntity<?> getArcher(@PathVariable long id) {
         try {
             Archer archer = archerService.getArcher(id);
             return new ResponseEntity<>(archer, HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(getErrorJson("NOT_FOUND",
+                            e.getMessage(),
+                            "/archers/" + id));
         }
     }
 
@@ -52,7 +59,11 @@ public class ArcherController {
             archerService.updateArcher(id, archer);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(getErrorJson("NOT_FOUND",
+                            e.getMessage(),
+                            "/archers/" + id + "/"));
         }
     }
 }
