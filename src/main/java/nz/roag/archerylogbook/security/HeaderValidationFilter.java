@@ -54,7 +54,11 @@ public class HeaderValidationFilter implements Filter {
                 res.sendError(HttpStatus.UNAUTHORIZED.value(), "Invalid key");
             } else {
                 var hmac = new HmacUtil();
-                var signatureVerification = hmac.calculateHMAC(secret.get().getSecretKey(), req.getRequestURI() + key + nonce + timestamp);
+                var path = req.getRequestURI();
+                if (StringUtils.hasText(req.getQueryString())) {
+                    path = path + "?" + req.getQueryString();
+                }
+                var signatureVerification = hmac.calculateHMAC(secret.get().getSecretKey(), path + key + nonce + timestamp);
 
                 logger.debug("Verifying incoming signature: {} against server signature: {}", signature, signatureVerification);
                 if (signatureVerification.equals(signature)) {

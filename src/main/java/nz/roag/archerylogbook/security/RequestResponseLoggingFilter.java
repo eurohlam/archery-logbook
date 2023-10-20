@@ -23,7 +23,7 @@ public class RequestResponseLoggingFilter implements Filter {
 
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
-        logger.info("Request from {} - {} : {} : {}", req.getRemoteAddr(), req.getMethod(), req.getRequestURI(), req.getContentType());
+        logger.info("Request from {} - {} : {} : {} : {}", req.getRemoteAddr(), req.getMethod(), req.getRequestURI(), req.getQueryString(), req.getContentType());
         filterChain.doFilter(request, response);
         logger.info("Response for {} - {} : {}", req.getRemoteAddr(), res.getStatus(), res.getContentType());
     }

@@ -128,13 +128,13 @@ class ScoreControllerTests extends AbstractControllerTest {
                 .andExpect(content().json("[" + json + "]"));
 
         mvc.perform(get("/archers/1/scores?page=0&size=20")
-                        .headers(getHttpHeaders("/archers/1/scores")))
+                        .headers(getHttpHeaders("/archers/1/scores?page=0&size=20")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(content().json("[" + json + "]"));
 
         mvc.perform(get("/archers/1/scores?page=-1&size=20")
-                        .headers(getHttpHeaders("/archers/1/scores")))
+                        .headers(getHttpHeaders("/archers/1/scores?page=-1&size=20")))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(content().json("""
