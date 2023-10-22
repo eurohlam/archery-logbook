@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -119,7 +120,7 @@ class ScoreControllerTests extends AbstractControllerTest {
     @Test
     void listAllScores() throws Exception {
         given(scoreRepository.findByArcherId(anyLong(), any(Pageable.class)))
-                .willReturn(List.of(score));
+                .willReturn(new PageImpl(List.of(score)));
 
         mvc.perform(get("/archers/1/scores")
                         .headers(getHttpHeaders("/archers/1/scores")))
@@ -127,8 +128,8 @@ class ScoreControllerTests extends AbstractControllerTest {
                 .andExpect(content().contentType("application/json"))
                 .andExpect(content().json("[" + json + "]"));
 
-        mvc.perform(get("/archers/1/scores?page=0&size=20")
-                        .headers(getHttpHeaders("/archers/1/scores?page=0&size=20")))
+        mvc.perform(get("/archers/1/scores?page=0&size=5")
+                        .headers(getHttpHeaders("/archers/1/scores?page=0&size=5")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(content().json("[" + json + "]"));

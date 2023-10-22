@@ -10,12 +10,12 @@ import nz.roag.archerylogbook.db.model.Score;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -35,7 +35,7 @@ public class ScoreService {
     @Autowired
     private ArcherRepository archerRepository;
 
-    public List<Score> listAllScores(long archerId, int page, int size) throws NoSuchElementException {
+    public Page<Score> listAllScores(long archerId, int page, int size) throws NoSuchElementException {
         logger.debug("Getting scores for archerId {}; page {} size {}", archerId, page, size);
         var archer = archerRepository.findById(archerId).orElseThrow(() -> new NoSuchElementException("Archer not found. archerId=" + archerId));
         return scoreRepository.findByArcherId(archer.getId(), PageRequest.of(page, size, Sort.by("scoreDate").descending()));

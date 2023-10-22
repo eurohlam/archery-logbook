@@ -4,12 +4,12 @@ import nz.roag.archerylogbook.db.model.Score;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import static nz.roag.archerylogbook.rest.ErrorMessage.getErrorJson;
@@ -42,8 +42,14 @@ public class ScoreController {
                                 "The value of size parameter should be between 1 and 100",
                                 "/archers/" + archerId + "/scores"));
             }
-            List<Score> scores = scoreService.listAllScores(archerId, page, size);
-            return new ResponseEntity<>(scores, HttpStatus.OK);
+            Page<Score> scores = scoreService.listAllScores(archerId, page, size);
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header("totalPages", String.valueOf(scores.getTotalPages()))
+                    .header("isLastPage", String.valueOf(scores.isLast()))
+                    .header("isFirstPage", String.valueOf(scores.isFirst()))
+                    .body(scores.getContent());
         } catch (NoSuchElementException e) {
             logger.error(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
