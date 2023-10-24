@@ -44,12 +44,16 @@ public class ScoreController {
             }
             Page<Score> scores = scoreService.listAllScores(archerId, page, size);
 
+            ScorePage<Score> scorePage = new ScorePage<>();
+            scorePage.setScores(scores.getContent());
+            scorePage.setTotalPages(scores.getTotalPages());
+            scorePage.setIsFirstPage(scores.isFirst());
+            scorePage.setIsLastPage(scores.isLast());
+            scorePage.setPageNumber(page);
+
             return ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .header("totalPages", String.valueOf(scores.getTotalPages()))
-                    .header("isLastPage", String.valueOf(scores.isLast()))
-                    .header("isFirstPage", String.valueOf(scores.isFirst()))
-                    .body(scores.getContent());
+                    .body(scorePage);
         } catch (NoSuchElementException e) {
             logger.error(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

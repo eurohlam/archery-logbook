@@ -473,9 +473,9 @@ paths:
           content:
             application/json:
               schema:
-                type: array
+                type: object
                 items:
-                  $ref: '#/components/schemas/Score'
+                  $ref: '#/components/schemas/ScorePage'
         '404':
           description: Archer not found
 
@@ -810,6 +810,25 @@ a concatenation of `path + key + nonce + timestamp`"
           example: 8
           minimum: 0
           maximum: 10
+    ScorePage:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+          example: 0
+          minimum: 0
+        totalPages:
+          type: integer
+          example: 5
+          minimum: 1
+        isFirstPage:
+          type: boolean
+        isLastPage:
+          type: boolean
+        scores:
+          type: array
+          items:
+            $ref: '#/components/schemas/Score'
 
 
 

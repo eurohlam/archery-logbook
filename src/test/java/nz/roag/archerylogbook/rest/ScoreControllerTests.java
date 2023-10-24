@@ -122,17 +122,26 @@ class ScoreControllerTests extends AbstractControllerTest {
         given(scoreRepository.findByArcherId(anyLong(), any(Pageable.class)))
                 .willReturn(new PageImpl(List.of(score)));
 
+        var pageJson = """
+                {
+                "pageNumber":0,
+                "totalPages":1,
+                "isLastPage":true,
+                "isFirstPage":true,
+                "scores":[
+                """ + json + "]}";
+
         mvc.perform(get("/archers/1/scores")
                         .headers(getHttpHeaders("/archers/1/scores")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
-                .andExpect(content().json("[" + json + "]"));
+                .andExpect(content().json(pageJson));
 
         mvc.perform(get("/archers/1/scores?page=0&size=5")
                         .headers(getHttpHeaders("/archers/1/scores?page=0&size=5")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
-                .andExpect(content().json("[" + json + "]"));
+                .andExpect(content().json(pageJson));
 
         mvc.perform(get("/archers/1/scores?page=-1&size=20")
                         .headers(getHttpHeaders("/archers/1/scores?page=-1&size=20")))
