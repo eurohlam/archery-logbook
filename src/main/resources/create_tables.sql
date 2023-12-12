@@ -23,8 +23,11 @@ CREATE TABLE `archery_club` (
   `country` varchar(50) DEFAULT NULL,
   `city` varchar(50) DEFAULT NULL,
   `url` varchar(250) DEFAULT NULL,
+  `archived` boolean DEFAULT 0,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`)
+  UNIQUE KEY `name` (`name`),
+  INDEX `idx_archery_club_idarc` (`id`, `archived`),
+  INDEX `idx_archery_club_namearc` (`name`, `archived`)
 );
 
 INSERT INTO `archery_club` (`id`, `name`, `country`, `city`) VALUES
@@ -37,9 +40,13 @@ CREATE TABLE `archery_archer` (
   `last_name` varchar(50) DEFAULT NULL,
   `email` varchar(100) NOT NULL,
   `club_id` bigint(20) DEFAULT NULL,
+  `archived` boolean DEFAULT false,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   KEY `club_id` (`club_id`),
+  INDEX `idx_archery_archer_idarc` (`id`, `archived`),
+  INDEX `idx_archery_archer_clubarc` (`club_id`, `archived`),
+  INDEX `idx_archery_archer_emailarc` (`email`, `archived`),
   CONSTRAINT `archery_archer_ibfk_1` FOREIGN KEY (`club_id`) REFERENCES `archery_club` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 );
 
@@ -58,8 +65,11 @@ CREATE TABLE `archery_bow` (
   `riser_model` varchar(50) DEFAULT NULL,
   `limbs_model` varchar(50) DEFAULT NULL,
   `traditional_model` varchar(50) DEFAULT NULL,
+  `archived` boolean DEFAULT false,
   PRIMARY KEY (`id`),
   KEY `archer_id` (`archer_id`),
+  INDEX `idx_archery_bow_idarc` (`id`, `archived`),
+  INDEX `idx_archery_bow_archerarc` (`archer_id`, `archived`),
   CONSTRAINT `archery_bow_ibfk_1` FOREIGN KEY (`archer_id`) REFERENCES `archery_archer` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 );
 
@@ -96,9 +106,14 @@ CREATE TABLE `archery_score` (
   `comment` longtext,
   `country` varchar(50) DEFAULT NULL,
   `city` varchar(50) DEFAULT NULL,
+  `archived` boolean DEFAULT false,
   PRIMARY KEY (`id`),
   KEY `archery_score_ibfk_1` (`archer_id`),
   KEY `archery_score_ibfk_2` (`bow_id`),
+  UNIQUE KEY `archery_score_date_unq` (score_date),
+  INDEX `idx_archery_score_idarc` (`id`, `archived`),
+  INDEX `idx_archery_score_archerarc` (`archer_id`, `archived`),
+  INDEX `idx_archery_score_bowarc` (`bow_id`, `archived`),
   CONSTRAINT `archery_score_ibfk_1` FOREIGN KEY (`archer_id`) REFERENCES `archery_archer` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `archery_score_ibfk_2` FOREIGN KEY (`bow_id`) REFERENCES `archery_bow` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
