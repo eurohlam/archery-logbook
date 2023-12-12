@@ -82,7 +82,7 @@ class BowControllerTests extends AbstractControllerTest {
 
     @Test
     void listAllBows() throws Exception{
-        given(bowRepository.findByArcherId(anyLong(), any(Sort.class)))
+        given(bowRepository.findByArcherIdAndArchived(anyLong(), anyBoolean(), any(Sort.class)))
                 .willReturn(List.of(bow));
 
         mvc.perform(get("/archers/1/bows")

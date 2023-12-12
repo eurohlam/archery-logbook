@@ -30,6 +30,9 @@ public class Club {
     private String url;
 
     @Getter @Setter
+    private Boolean archived = false;
+
+    @Getter @Setter
     @OneToMany(targetEntity = Archer.class, cascade = CascadeType.DETACH)
     @JoinColumn(name = "club_id")
     private Set<Archer> archers = new HashSet<>();

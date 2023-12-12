@@ -28,7 +28,7 @@ public class BowService {
     public List<Bow> listAllBows(long archerId) throws NoSuchElementException {
         logger.debug("Getting bows for archer with id {}", archerId);
         var archer = archerRepository.findById(archerId).orElseThrow(() -> new NoSuchElementException("Archer not found. archerId=" + archerId));
-        return bowRepository.findByArcherId(archer.getId(), Sort.by("name").ascending());
+        return bowRepository.findByArcherIdAndArchived(archer.getId(), false, Sort.by("name").ascending());
     }
 
     @Transactional
@@ -68,7 +68,9 @@ public class BowService {
     @Transactional
     public void deleteBow(long id) {
         logger.warn("Deleting bow with id {}", id);
-        bowRepository.deleteById(id);
+        //we do not delete the bow, just mark it as archived
+        //it will allow us to show scores for deleted bows
+        bowRepository.setArchivedForBowId(true, id);
     }
 
     @Transactional

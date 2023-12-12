@@ -108,6 +108,19 @@ class RepositoryTests {
         Assertions.assertEquals("Test bow", bows.get(0).getName());
         Assertions.assertEquals(Bow.Type.RECURVE, bows.get(0).getType());
         Assertions.assertEquals(3, bows.get(0).getDistanceSettingsList().size());
+
+        bows = bowRepository.findByArcherIdAndArchived(archerId, false, Sort.by("name").ascending());
+        Assertions.assertEquals("Test bow", bows.get(0).getName());
+        Assertions.assertEquals(Bow.Type.RECURVE, bows.get(0).getType());
+        Assertions.assertEquals(3, bows.get(0).getDistanceSettingsList().size());
+
+        bows = bowRepository.findByArcherIdAndArchived(archerId, true, Sort.by("name").ascending());
+        Assertions.assertEquals(0, bows.size());
+
+        bowRepository.setArchivedForBowId(true, bow.getId());
+        bows = bowRepository.findByArcherIdAndArchived(archerId, true, Sort.by("name").ascending());
+        Assertions.assertEquals(1, bows.size());
+
     }
 
     @Test
@@ -151,14 +164,31 @@ class RepositoryTests {
         Assertions.assertEquals(10, scores.get(0).getSum());
         Assertions.assertEquals(10, scores.get(0).getEnds().get(0).getRounds().get(0).getRoundScore());
 
-        var pageableScores = scoreRepository.findByArcherId(archerId, PageRequest.of(0,5, Sort.by("scoreDate").ascending()));
+        var pageableScores = scoreRepository.findByArcherIdAndArchived(archerId, false, PageRequest.of(0,5, Sort.by("scoreDate").ascending()));
         Assertions.assertEquals("30", pageableScores.getContent().get(0).getMatch());
         Assertions.assertEquals("Nottingham", pageableScores.getContent().get(0).getCity());
         Assertions.assertEquals(1, pageableScores.getContent().get(0).getEndsCount());
         Assertions.assertEquals(10, pageableScores.getContent().get(0).getSum());
         Assertions.assertEquals(10, pageableScores.getContent().get(0).getEnds().get(0).getRounds().get(0).getRoundScore());
 
+        pageableScores = scoreRepository.findByArcherIdAndArchived(archerId,true,  PageRequest.of(2,5, Sort.by("scoreDate").ascending()));
+        Assertions.assertEquals(0, pageableScores.getContent().size());
+
+        pageableScores = scoreRepository.findByArcherIdAndArchived(archerId, true, PageRequest.of(0,5, Sort.by("scoreDate").ascending()));
+        Assertions.assertEquals(0, pageableScores.getContent().size());
+
         pageableScores = scoreRepository.findByArcherId(archerId, PageRequest.of(2,5, Sort.by("scoreDate").ascending()));
+        Assertions.assertEquals(0, pageableScores.getContent().size());
+
+        pageableScores = scoreRepository.findByArcherId(archerId, PageRequest.of(0,5, Sort.by("scoreDate").ascending()));
+        Assertions.assertEquals("30", pageableScores.getContent().get(0).getMatch());
+        Assertions.assertEquals("Nottingham", pageableScores.getContent().get(0).getCity());
+        Assertions.assertEquals(1, pageableScores.getContent().get(0).getEndsCount());
+        Assertions.assertEquals(10, pageableScores.getContent().get(0).getSum());
+        Assertions.assertEquals(10, pageableScores.getContent().get(0).getEnds().get(0).getRounds().get(0).getRoundScore());
+
+        scoreRepository.setArchivedForScoreId(true, pageableScores.getContent().get(0).getId());
+        pageableScores = scoreRepository.findByArcherIdAndArchived(archerId, false, PageRequest.of(0,5, Sort.by("scoreDate").ascending()));
         Assertions.assertEquals(0, pageableScores.getContent().size());
     }
 }

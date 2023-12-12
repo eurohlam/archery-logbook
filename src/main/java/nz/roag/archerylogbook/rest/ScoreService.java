@@ -38,7 +38,7 @@ public class ScoreService {
     public Page<Score> listAllScores(long archerId, int page, int size) throws NoSuchElementException {
         logger.debug("Getting scores for archerId {}; page {} size {}", archerId, page, size);
         var archer = archerRepository.findById(archerId).orElseThrow(() -> new NoSuchElementException("Archer not found. archerId=" + archerId));
-        return scoreRepository.findByArcherId(archer.getId(), PageRequest.of(page, size, Sort.by("scoreDate").descending()));
+        return scoreRepository.findByArcherIdAndArchived(archer.getId(), false, PageRequest.of(page, size, Sort.by("scoreDate").descending()));
     }
 
     @Transactional
@@ -69,6 +69,6 @@ public class ScoreService {
     @Transactional
     public void deleteScore(long id) {
         logger.warn("Deleting score by id {}", id);
-        scoreRepository.deleteById(id);
+        scoreRepository.setArchivedForScoreId(true, id);
     }
 }

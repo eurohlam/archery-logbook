@@ -24,8 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -119,7 +118,7 @@ class ScoreControllerTests extends AbstractControllerTest {
 
     @Test
     void listAllScores() throws Exception {
-        given(scoreRepository.findByArcherId(anyLong(), any(Pageable.class)))
+        given(scoreRepository.findByArcherIdAndArchived(anyLong(), anyBoolean(), any(Pageable.class)))
                 .willReturn(new PageImpl(List.of(score)));
 
         var pageJson = """

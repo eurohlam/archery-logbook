@@ -52,6 +52,9 @@ public class Score {
     private String city;
 
     @Getter @Setter
+    private Boolean archived = false;
+
+    @Getter @Setter
     @OneToMany(targetEntity = End.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "score_id")
     private List<End> ends = new ArrayList<>();

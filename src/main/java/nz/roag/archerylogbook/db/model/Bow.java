@@ -11,7 +11,7 @@ import java.util.TreeSet;
 @Table(name = "ARCHERY_BOW")
 public class Bow {
 
-    public enum Type {COMPOUND, RECURVE, TRADITIONAL};
+    public enum Type {COMPOUND, RECURVE, TRADITIONAL}
     public enum Level {BEGINNER, INTERMEDIATE, ADVANCED}
 
     @Getter
@@ -50,6 +50,9 @@ public class Bow {
 
     @Getter @Setter
     private String traditionalModel;
+
+    @Getter @Setter
+    private Boolean archived = false;
 
     @Getter @Setter
     @OneToMany(targetEntity = DistanceSettings.class, cascade = CascadeType.ALL)

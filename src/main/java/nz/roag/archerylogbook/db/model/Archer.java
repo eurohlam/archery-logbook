@@ -32,6 +32,9 @@ public class Archer {
     private Long clubId;
 
     @Getter @Setter
+    private Boolean archived = false;
+
+    @Getter @Setter
     @OneToMany(targetEntity = Bow.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "archer_id")
     private List<Bow> bowList = new ArrayList<>();
