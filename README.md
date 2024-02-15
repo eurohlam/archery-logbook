@@ -3,7 +3,7 @@ archery-logbook
 
 ## Overview
 
-This is a springboot based REST API that helps to build a back-end for [Archer's Log Book](https://roundkick.nz/) project
+This is a spring-boot based REST API that helps to build a back-end for [Archer's Log Book](https://roundkick.nz/) project
 
 ## Project
 
@@ -24,6 +24,18 @@ The API is designed to work with MySQL/MariaDB as a database. In local environme
 - Open MariaDB admin console in browser: https://localhost:8080 and login with credentials: robin/hood
 - Run in admin console the script `src/main/resources/create_tables.sql` to create database structure and testing data
 - API endpoint is available as https://localhost:7878 
+
+## Run via Docker
+
+    sudo docker run \
+        --name archery-logbook \
+        --add-host host.docker.internal:host-gateway \
+        --env DB_URL=jdbc:mysql://host.docker.internal:3306/archery \
+        --env DB_USER=robin \
+        --env DB_PWD=hood \
+        -p 7878:7878 \
+        --detach \
+        eurohlam/archery-logbook:1.0
 
 ## Security
 

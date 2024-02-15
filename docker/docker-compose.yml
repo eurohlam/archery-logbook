@@ -4,7 +4,7 @@ version: '3.1'
 services:
 
   db:
-    image: mariadb:latest
+    image: mariadb:10.4
     restart: always
     environment:
       MARIADB_ROOT_PASSWORD: example
@@ -23,9 +23,14 @@ services:
   app:
     build:
       context: .
-    image: archer-logbook
-    container_name: archer-logbook
+    image: archery-logbook
+    container_name: archery-logbook
     restart: always
+    environment:
+      SERVER_PORT: 7878
+      DB_URL: jdbc:mysql://host.docker.internal:3306/archery
+      DB_USER: robin
+      DB_PWD: hood
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:

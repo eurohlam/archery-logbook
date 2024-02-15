@@ -4,7 +4,7 @@ logging:
     nz:
       roag: DEBUG
 server:
-  port: 7878
+  port: ${SERVER_PORT}
   ssl:
     enabled: true
     keystore: /tomcat-ssl-keystore.jks
