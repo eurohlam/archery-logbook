@@ -30,6 +30,7 @@ The API is designed to work with MySQL/MariaDB as a database. In local environme
     sudo docker run \
         --name archery-logbook \
         --add-host host.docker.internal:host-gateway \
+        --env SERVER_PORT=7878 \
         --env DB_URL=jdbc:mysql://host.docker.internal:3306/archery \
         --env DB_USER=robin \
         --env DB_PWD=hood \
