@@ -63,4 +63,8 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	<scm>
+	    <developerConnection>scm:git:https://github.com/eurohlam/archery-logbook.git</developerConnection>
+	</scm>	
 </project>
