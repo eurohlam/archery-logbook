@@ -2,7 +2,11 @@ name: Build a new release with Maven
 
 on:
   workflow_dispatch:
-
+    inputs:
+      release_name:
+        description: "release name"
+        type: "string"
+  
 jobs:
   build:
 
