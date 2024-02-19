@@ -9,11 +9,14 @@ ARG DB_USER
 ARG DB_PWD
 
 ENV SERVER_PORT=${SERVER_PORT:-7878}
+ENV SERVER_SSL_KEYSTORE=${SERVER_SSL_KEYSTORE:-classpath:tomcat-ssl-keystore.jks}
+ENV SERVER_SSL_KEYSTORE_PASSWORD=${SERVER_SSL_KEYSTORE_PASSWORD}
+ENV SERVER_SSL_KEY_ALIAS=${SERVER_SSL_KEY_ALIAS}
+ENV SERVER_SSL_KEY_PASSWORD=${SERVER_SSL_KEY_PASSWORD}
 ENV DB_URL=${DB_URL:-jdbc:mysql://host.docker.internal:3306/archery}
 ENV DB_USER=${DB_USER:-robin}
 ENV DB_PWD=${DB_PWD:-hood}
 
-COPY tomcat-ssl-keystore.jks tomcat-ssl-keystore.jks
 COPY *.jar app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]
 

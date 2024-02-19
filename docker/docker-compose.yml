@@ -23,11 +23,15 @@ services:
   app:
     build:
       context: .
-    image: archery-logbook
+    image: eurohlam/archery-logbook:1.0
     container_name: archery-logbook
     restart: always
     environment:
       SERVER_PORT: 7878
+      SERVER_SSL_KEYSTORE: classpath:archery-logbook-keystore.jks
+      SERVER_SSL_KEYSTORE_PASSWORD: changeit
+      SERVER_SSL_KEY_ALIAS: archery-logbook
+      SERVER_SSL_KEY_PASSWORD: changeit
       DB_URL: jdbc:mysql://host.docker.internal:3306/archery
       DB_USER: robin
       DB_PWD: hood
@@ -35,5 +39,7 @@ services:
       - "host.docker.internal:host-gateway"
     ports:
       - 7878:7878
+    depends_on:
+      - db
 
 

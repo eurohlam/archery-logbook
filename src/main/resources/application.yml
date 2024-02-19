@@ -7,5 +7,7 @@ server:
   port: ${SERVER_PORT}
   ssl:
     enabled: true
-    keystore: /tomcat-ssl-keystore.jks
-#    keystore: src/main/resources/tomcat-ssl-keystore.jks
+    key-store: ${SERVER_SSL_KEYSTORE}
+    key-store-password: ${SERVER_SSL_KEYSTORE_PASSWORD}
+    key-alias: ${SERVER_SSL_KEY_ALIAS}
+    key-password: ${SERVER_SSL_KEY_PASSWORD}
