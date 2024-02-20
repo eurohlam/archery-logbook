@@ -16,5 +16,19 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+
+    - name: View settings.xml
+      run: cat /home/runner/.m2/settings.xml    
+
+    - name: Print users
+      run: echo ${{ GITHUB_REPOSITORY_OWNER }}
+
+    - name: Configure Git user
+      run: |
+        git config user.email "actions@github.com"
+        git config user.name "GitHub Actions"
+      
     - name: Build with Maven
-      run: mvn -Dusername=${{ GITHUB_REPOSITORY_OWNER }} -DtagNameFormat=v@{project.version} release:prepare
+      run: mvn -Dusername=${{ GITHUB_REPOSITORY_OWNER }} -DtagNameFormat=v@{project.version} -DdryRun=true release:prepare    
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
