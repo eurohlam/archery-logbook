@@ -28,4 +28,4 @@ jobs:
     - name: Build with Maven
       run: mvn -DtagNameFormat=v@{project.version} release:prepare    
       env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_SECRET }}
