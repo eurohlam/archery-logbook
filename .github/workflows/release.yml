@@ -26,6 +26,6 @@ jobs:
         git config user.name "GitHub Actions"
       
     - name: Build with Maven
-      run: mvn -DtagNameFormat=v@{project.version} release:prepare    
+      run: mvn -DtagNameFormat=v@{project.version} release:prepare release:perform    
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_SECRET }}
