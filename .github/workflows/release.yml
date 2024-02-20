@@ -2,10 +2,6 @@ name: Build a new release with Maven
 
 on:
   workflow_dispatch:
-    inputs:
-      release_name:
-        description: "release name"
-        type: "string"
   
 jobs:
   build:
@@ -21,4 +17,4 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: mvn -DdryRun=true release:prepare
+      run: mvn release:prepare
