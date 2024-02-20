@@ -29,6 +29,6 @@ jobs:
         git config user.name "GitHub Actions"
       
     - name: Build with Maven
-      run: mvn -Dusername=${{ GITHUB_REPOSITORY_OWNER }} -DtagNameFormat=v@{project.version} -DdryRun=true release:prepare    
+      run: mvn -DtagNameFormat=v@{project.version} -DdryRun=true release:prepare    
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
