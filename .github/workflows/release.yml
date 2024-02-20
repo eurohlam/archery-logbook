@@ -21,7 +21,7 @@ jobs:
       run: cat /home/runner/.m2/settings.xml    
 
     - name: Print users
-      run: echo ${{ GITHUB_REPOSITORY_OWNER }}
+      run: echo "${{ GITHUB_REPOSITORY_OWNER }}"
 
     - name: Configure Git user
       run: |
