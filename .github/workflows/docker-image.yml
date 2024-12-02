@@ -1,0 +1,32 @@
+name: Docker Image CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+    
+    - name: Build a package with Maven
+      run: mvn -B package --file pom.xml        
+
+    - name: Show directory
+      run: ls -lrt
+      
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag eurohlam/archery-logbook:0.1
+
+    - name: Push the Docker image to repo
+      run: docker push eurohlam/archery-logbook:0.1
