@@ -65,6 +65,7 @@ CREATE TABLE `archery_bow` (
   `riser_model` varchar(50) DEFAULT NULL,
   `limbs_model` varchar(50) DEFAULT NULL,
   `traditional_model` varchar(50) DEFAULT NULL,
+  `longbow_model` varchar(50) DEFAULT NULL,
   `archived` boolean DEFAULT false,
   PRIMARY KEY (`id`),
   KEY `archer_id` (`archer_id`),
@@ -75,7 +76,7 @@ CREATE TABLE `archery_bow` (
 
 INSERT INTO `archery_bow` (`id`, `archer_id`, `name`, `type`, `level`, `poundage`, `compound_model`, `riser_model`, `limbs_model`) VALUES
 (1,	1,	'My bow',	'RECURVE',	'INTERMEDIATE',	'28-32',	NULL,	'Black',	'hren'),
-(5,	1,	'My best bow',	'RECURVE',	'INTERMEDIATE',	'28-32',	NULL,	'Black',	NULL);
+(5,	1,	'My best bow',	'BAREBOW',	'INTERMEDIATE',	'28-32',	NULL,	'Black',	NULL);
 
 
 
