@@ -52,7 +52,7 @@ public class BowService {
         storedBow.setType(bow.getType());
         storedBow.setPoundage(bow.getPoundage());
         storedBow.setLevel(bow.getLevel());
-        if (bow.getType() == Bow.Type.RECURVE) {
+        if ((bow.getType() == Bow.Type.RECURVE) || (bow.getType() == Bow.Type.BAREBOW)) {
             storedBow.setRiserModel(bow.getRiserModel());
             storedBow.setLimbsModel(bow.getLimbsModel());
         }
@@ -61,6 +61,9 @@ public class BowService {
         }
         if (bow.getType() == Bow.Type.TRADITIONAL) {
             storedBow.setTraditionalModel(bow.getTraditionalModel());
+        }
+        if (bow.getType() == Bow.Type.LONGBOW) {
+            storedBow.setLongbowModel(bow.getLongbowModel());
         }
         bowRepository.save(storedBow);
     }
