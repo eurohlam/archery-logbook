@@ -58,7 +58,7 @@ CREATE TABLE `archery_bow` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `archer_id` bigint(20) NOT NULL,
   `name` varchar(50) NOT NULL,
-  `type` enum('RECURVE','COMPOUND','TRADITIONAL') NOT NULL,
+  `type` enum('RECURVE','COMPOUND','TRADITIONAL','BAREBOW','LONGBOW') NOT NULL,
   `level` enum('BEGINNER','INTERMEDIATE','ADVANCED') DEFAULT NULL,
   `poundage` varchar(50) DEFAULT NULL,
   `compound_model` varchar(50) DEFAULT NULL,
