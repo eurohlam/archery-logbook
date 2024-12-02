@@ -29,7 +29,7 @@ jobs:
       run: cp target/*.jar docker/
       
     - name: Build the Docker image
-      run: cd docker && docker build . --file Dockerfile --tag ${{ env.DOCKER_IMAGE_NAME }}:0.1
+      run: cd docker && docker build . --file Dockerfile --tag ${{ vars.DOCKER_IMAGE_NAME }}:0.1
 
     - name: Push the Docker image to repo
-      run: docker push ${{ env.DOCKER_IMAGE_NAME }}:0.1
+      run: docker push ${{ vars.DOCKER_IMAGE_NAME }}:0.1
