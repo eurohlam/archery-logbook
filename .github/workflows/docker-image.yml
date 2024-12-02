@@ -24,9 +24,12 @@ jobs:
 
     - name: Show directory
       run: ls -lrt
+
+    - name: Copy package to docker folder
+      run: cp target/*.jar docker/
       
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag eurohlam/archery-logbook:0.1
+      run: cd docker && docker build . --file Dockerfile --tag ${{ env.DOCKER_IMAGE_NAME }}:0.1
 
     - name: Push the Docker image to repo
-      run: docker push eurohlam/archery-logbook:0.1
+      run: docker push ${{ env.DOCKER_IMAGE_NAME }}:0.1
