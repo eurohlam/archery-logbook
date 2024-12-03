@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>nz.roag</groupId>
 	<artifactId>archery-logbook</artifactId>
-	<version>1.0.4-SNAPSHOT</version>
+	<version>1.0.4</version>
 	<name>archery-logbook</name>
 	<description>Archery logbook API</description>
 
@@ -66,6 +66,6 @@
 	
 	<scm>
 	    <developerConnection>scm:git:https://github.com/eurohlam/archery-logbook.git</developerConnection>
-	  <tag>HEAD</tag>
+	  <tag>v1.0.4</tag>
   </scm>	
 </project>
