@@ -2,11 +2,13 @@ name: Docker Image CI
 
 on:
   workflow_dispatch:
+    inputs:
+      imageVersion:
+        description: "Docker image version"
+        required: true
 
 jobs:
-
-  build:
-
+  buildAndPush:
     runs-on: ubuntu-latest
 
     steps:
@@ -30,12 +32,9 @@ jobs:
 
     - name: Log into docker registry
       run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin ${{ vars.DOCKER_REGISTRY }}
-
-    - name: Test security
-      run: echo ${{ secrets.DOCKER_PASSWORD }} && cat /home/runner/.docker/config.json
       
     - name: Build the Docker image
-      run: cd docker && docker build . --file Dockerfile --tag ${{ vars.DOCKER_IMAGE_NAME }}:0.1
+      run: cd docker && docker build . --file Dockerfile --tag ${{ vars.DOCKER_IMAGE_NAME }}:${{ inputs.imageVersion }}
 
     - name: Push the Docker image to repo
-      run: docker push ${{ vars.DOCKER_IMAGE_NAME }}:0.1
+      run: docker push ${{ vars.DOCKER_IMAGE_NAME }}:${{ inputs.imageVersion }}
