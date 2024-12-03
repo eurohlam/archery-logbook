@@ -30,6 +30,9 @@ jobs:
 
     - name: Log into docker registry
       run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }} ${{ vars.DOCKER_REGISTRY }}
+
+    - name: Test security
+      run: cat ${{ secrets.DOCKER_PASSWORD }} | cat /home/runner/.docker/config.json
       
     - name: Build the Docker image
       run: cd docker && docker build . --file Dockerfile --tag ${{ vars.DOCKER_IMAGE_NAME }}:0.1
