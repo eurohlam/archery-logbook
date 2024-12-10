@@ -40,9 +40,9 @@ public class Archer {
     private List<Bow> bowList = new ArrayList<>();
 
     @Getter @Setter
-    @OneToMany(targetEntity = Score.class, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = Round.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "archer_id")
-    private List<Score> scoreList = new ArrayList<>();
+    private List<Round> roundList = new ArrayList<>();
 
     @Override
     public String toString() {

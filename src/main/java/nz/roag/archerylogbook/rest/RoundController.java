@@ -1,6 +1,6 @@
 package nz.roag.archerylogbook.rest;
 
-import nz.roag.archerylogbook.db.model.Score;
+import nz.roag.archerylogbook.db.model.Round;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +15,16 @@ import java.util.NoSuchElementException;
 import static nz.roag.archerylogbook.rest.ErrorMessage.getErrorJson;
 
 @RestController
-@RequestMapping("/archers/{archerId}/scores")
-public class ScoreController {
+@RequestMapping("/archers/{archerId}/rounds")
+public class RoundController {
 
-    private final Logger logger = LoggerFactory.getLogger(ScoreController.class);
+    private final Logger logger = LoggerFactory.getLogger(RoundController.class);
 
     @Autowired
-    private ScoreService scoreService;
+    private RoundService roundService;
 
     @GetMapping("")
-    public ResponseEntity<?> listAllScores(@PathVariable long archerId,
+    public ResponseEntity<?> listAllRounds(@PathVariable long archerId,
                                            @RequestParam(name = "page", defaultValue = "0") int page,
                                            @RequestParam(name = "size", defaultValue = "20") int size) {
         try {
@@ -33,56 +33,56 @@ public class ScoreController {
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(getErrorJson("BAD_REQUEST",
                                 "The value of page parameter can not be less then 0",
-                                "/archers/" + archerId + "/scores"));
+                                "/archers/" + archerId + "/rounds"));
             }
             if (size < 1 || size > 100) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(getErrorJson("BAD_REQUEST",
                                 "The value of size parameter should be between 1 and 100",
-                                "/archers/" + archerId + "/scores"));
+                                "/archers/" + archerId + "/rounds"));
             }
-            Page<Score> scores = scoreService.listAllScores(archerId, page, size);
+            Page<Round> rounds = roundService.listAllRounds(archerId, page, size);
 
-            ScorePage<Score> scorePage = new ScorePage<>();
-            scorePage.setScores(scores.getContent());
-            scorePage.setTotalPages(scores.getTotalPages());
-            scorePage.setIsFirstPage(scores.isFirst());
-            scorePage.setIsLastPage(scores.isLast());
-            scorePage.setPageNumber(page);
+            RoundPage<Round> roundPage = new RoundPage<>();
+            roundPage.setRounds(rounds.getContent());
+            roundPage.setTotalPages(rounds.getTotalPages());
+            roundPage.setIsFirstPage(rounds.isFirst());
+            roundPage.setIsLastPage(rounds.isLast());
+            roundPage.setPageNumber(page);
 
             return ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(scorePage);
+                    .body(roundPage);
         } catch (NoSuchElementException e) {
             logger.error(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(getErrorJson("NOT_FOUND",
                             e.getMessage(),
-                            "/archers/" + archerId + "/scores"));
+                            "/archers/" + archerId + "/rounds"));
         }
     }
 
-    @GetMapping("/{scoreId}")
-    public ResponseEntity<?> getScore(@PathVariable long archerId, @PathVariable long scoreId) {
+    @GetMapping("/{roundId}")
+    public ResponseEntity<?> getRound(@PathVariable long archerId, @PathVariable long roundId) {
         try {
-            Score score = scoreService.getScore(scoreId);
-            return new ResponseEntity<>(score, HttpStatus.OK);
+            Round round = roundService.getRound(roundId);
+            return new ResponseEntity<>(round, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             logger.error(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(getErrorJson("NOT_FOUND",
                             e.getMessage(),
-                            "/archers/" + archerId + "/scores/" + scoreId));
+                            "/archers/" + archerId + "/rounds/" + roundId));
         }
     }
 
     @PostMapping("/")
-    public ResponseEntity<?> addScore(@PathVariable long archerId, @RequestBody Score score) {
+    public ResponseEntity<?> addRound(@PathVariable long archerId, @RequestBody Round round) {
         try {
-            scoreService.addScore(archerId, score);
+            roundService.addRound(archerId, round);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
             logger.error(e.getMessage(), e);
@@ -90,12 +90,12 @@ public class ScoreController {
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(getErrorJson("NOT_FOUND",
                             e.getMessage(),
-                            "/archers/" + archerId + "/scores/"));
+                            "/archers/" + archerId + "/rounds/"));
         }
     }
 
-    @DeleteMapping("/{scoreId}")
-    public void deleteScore(@PathVariable long scoreId) {
-        scoreService.deleteScore(scoreId);
+    @DeleteMapping("/{roundId}")
+    public void deleteRound(@PathVariable long roundId) {
+        roundService.deleteRound(roundId);
     }
 }

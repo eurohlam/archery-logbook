@@ -7,7 +7,7 @@ public class ErrorMessage {
                 {
                    "status": "%s",
                    "errorMessage": "%s",
-                   "path": "/archers/%s/scores"   
+                   "path": "%s"
                 }
                 """
                 .formatted(errorStatus, errorMessage, path);

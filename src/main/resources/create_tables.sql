@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS `archery_round`;
+DROP TABLE IF EXISTS `archery_shot`;
 DROP TABLE IF EXISTS `archery_end`;
-DROP TABLE IF EXISTS `archery_score`;
+DROP TABLE IF EXISTS `archery_round`;
 DROP TABLE IF EXISTS `archery_distance_settings`;
 DROP TABLE IF EXISTS `archery_bow`;
 DROP TABLE IF EXISTS `archery_archer`;
@@ -98,57 +98,58 @@ INSERT INTO `archery_distance_settings` (`id`, `bow_id`, `distance`, `sight`, `i
 
 
 
-CREATE TABLE `archery_score` (
+CREATE TABLE `archery_round` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `archer_id` bigint(20) NOT NULL,
   `bow_id` bigint(20) NOT NULL,
-  `score_date` datetime NOT NULL DEFAULT current_timestamp(),
-  `match` varchar(50) NOT NULL,
+  `round_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `distance` varchar(50) NOT NULL,
+  `target_face` varchar(50) NOT NULL,
   `comment` longtext,
   `country` varchar(50) DEFAULT NULL,
   `city` varchar(50) DEFAULT NULL,
   `archived` boolean DEFAULT false,
   PRIMARY KEY (`id`),
-  KEY `archery_score_ibfk_1` (`archer_id`),
-  KEY `archery_score_ibfk_2` (`bow_id`),
-  UNIQUE KEY `archery_score_date_unq` (score_date),
-  INDEX `idx_archery_score_idarc` (`id`, `archived`),
-  INDEX `idx_archery_score_archerarc` (`archer_id`, `archived`),
-  INDEX `idx_archery_score_bowarc` (`bow_id`, `archived`),
-  CONSTRAINT `archery_score_ibfk_1` FOREIGN KEY (`archer_id`) REFERENCES `archery_archer` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `archery_score_ibfk_2` FOREIGN KEY (`bow_id`) REFERENCES `archery_bow` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `archery_round_ibfk_1` (`archer_id`),
+  KEY `archery_round_ibfk_2` (`bow_id`),
+  UNIQUE KEY `archery_round_date_unq` (round_date),
+  INDEX `idx_archery_round_idarc` (`id`, `archived`),
+  INDEX `idx_archery_round_archerarc` (`archer_id`, `archived`),
+  INDEX `idx_archery_round_bowarc` (`bow_id`, `archived`),
+  CONSTRAINT `archery_round_ibfk_1` FOREIGN KEY (`archer_id`) REFERENCES `archery_archer` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `archery_round_ibfk_2` FOREIGN KEY (`bow_id`) REFERENCES `archery_bow` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
-INSERT INTO `archery_score` (`id`, `archer_id`, `bow_id`, `score_date`, `match`, `comment`, `country`, `city`) VALUES
-(1,	1,	1,	'2023-02-16 22:29:32',	20,	'for fun', 'NZ', 'WGT');
+INSERT INTO `archery_round` (`id`, `archer_id`, `bow_id`, `round_date`, `distance`, `target_face`, `comment`, `country`, `city`) VALUES
+(1,	1,	1,	'2023-02-16 22:29:32',	'50', '122cm', 'for fun', 'NZ', 'WGT');
 
 
 CREATE TABLE `archery_end` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `score_id` bigint(20) NOT NULL,
+  `round_id` bigint(20) NOT NULL,
   `end_number` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `archery_end_unq` (`score_id`,`end_number`),
-  CONSTRAINT `archery_end_ibfk_1` FOREIGN KEY (`score_id`) REFERENCES `archery_score` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  UNIQUE KEY `archery_end_unq` (`round_id`,`end_number`),
+  CONSTRAINT `archery_end_ibfk_1` FOREIGN KEY (`round_id`) REFERENCES `archery_round` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 );
 
-INSERT INTO `archery_end` (`id`, `score_id`, `end_number`) VALUES
+INSERT INTO `archery_end` (`id`, `round_id`, `end_number`) VALUES
 (1,	1,	1),
 (2,	1,	2),
 (3,	1,	3);
 
 
-CREATE TABLE `archery_round` (
+CREATE TABLE `archery_shot` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `end_id` bigint(20) NOT NULL,
-  `round_number` int(11) NOT NULL,
-  `round_score` int(11) NOT NULL,
+  `shot_number` int(11) NOT NULL,
+  `shot_score` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `archery_round_unq` (`end_id`,`round_number`),
-  CONSTRAINT `archery_round_ibfk_1` FOREIGN KEY (`end_id`) REFERENCES `archery_end` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  UNIQUE KEY `archery_shot_unq` (`end_id`,`shot_number`),
+  CONSTRAINT `archery_shot_ibfk_1` FOREIGN KEY (`end_id`) REFERENCES `archery_end` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 );
 
-INSERT INTO `archery_round` (`id`, `end_id`, `round_number`, `round_score`) VALUES
+INSERT INTO `archery_shot` (`id`, `end_id`, `shot_number`, `shot_score`) VALUES
 (1,	1,	1,	8),
 (3,	1,	2,	6),
 (4,	1,	3,	7),

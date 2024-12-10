@@ -8,7 +8,7 @@ This is a spring-boot based REST API that helps to build a back-end for [Archer'
 ## Project
 
 This API is a part of a free project [Archer's Log Book](https://roundkick.nz/).  
-Archer's Log Book helps archers to manage their scores, bows and overall progress.
+Archer's Log Book helps archers to manage their rounds, bows and overall progress.
 
 ## How to build
 

@@ -2,12 +2,12 @@ package nz.roag.archerylogbook.rest;
 
 import nz.roag.archerylogbook.db.ArcherRepository;
 import nz.roag.archerylogbook.db.EndRepository;
+import nz.roag.archerylogbook.db.ShotRepository;
 import nz.roag.archerylogbook.db.RoundRepository;
-import nz.roag.archerylogbook.db.ScoreRepository;
 import nz.roag.archerylogbook.db.model.Archer;
 import nz.roag.archerylogbook.db.model.End;
+import nz.roag.archerylogbook.db.model.Shot;
 import nz.roag.archerylogbook.db.model.Round;
-import nz.roag.archerylogbook.db.model.Score;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class ScoreControllerTests extends AbstractControllerTest {
+class RoundControllerTests extends AbstractControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -40,40 +40,41 @@ class ScoreControllerTests extends AbstractControllerTest {
     @MockBean
     private ArcherRepository archerRepository;
     @MockBean
-    private ScoreRepository scoreRepository;
+    private RoundRepository roundRepository;
     @MockBean
     private EndRepository endRepository;
     @MockBean
-    private RoundRepository roundRepository;
+    private ShotRepository shotRepository;
 
     private Archer archer;
-    private Score score;
+    private Round round;
     private End end;
     private final String json = """
             {
                 "id":0,
                 "archerId":1,
                 "bowId": null,
-                "scoreDate":"2023-01-15T11:15:00.000+00:00",
-                "match":"30",
+                "roundDate":"2023-01-15T11:15:00.000+00:00",
+                "distance":"30",
+                "targetFace":"122cm",
                 "comment":null,
                 "country":"England",
                 "city":"Nottingham",
                 "ends":[
                     {
                         "id":0,
-                        "scoreId":0,
+                        "roundId":0,
                         "endNumber":1,
-                        "rounds":[
+                        "shots":[
                             {
                                 "id":0,
                                 "endId":0,
-                                "roundNumber":1,
-                                "roundScore":10
+                                "shotNumber":1,
+                                "shotScore":10
                             }],
                         "sum":10,
                         "avg":"10.00",
-                        "roundsCount":1
+                        "shotsCount":1
                     }],
                     "sum":10,
                     "avg":"10.00",
@@ -93,23 +94,24 @@ class ScoreControllerTests extends AbstractControllerTest {
         archer.setEmail("robin@hood.arch");
         archer.setClubId(11L);
 
-        score = new Score();
-        score.setArcherId(archer.getId());
-        score.setMatch("30");
-        score.setCity("Nottingham");
-        score.setScoreDate(Date.from(
+        round = new Round();
+        round.setArcherId(archer.getId());
+        round.setDistance("30");
+        round.setTargetFace("122cm");
+        round.setCity("Nottingham");
+        round.setRoundDate(Date.from(
                 LocalDateTime.of(2023, 1, 15, 11, 15)
                         .toInstant(ZoneOffset.UTC)));
-        score.setCountry("England");
+        round.setCountry("England");
 
         end = new End();
         end.setEndNumber((short) 1);
 
-        var round = new Round();
-        round.setRoundNumber((short) 1);
-        round.setRoundScore((short) 10);
-        end.setRounds(List.of(round));
-        score.setEnds(List.of(end));
+        var shot = new Shot();
+        shot.setShotNumber((short) 1);
+        shot.setShotScore((short) 10);
+        end.setShots(List.of(shot));
+        round.setEnds(List.of(end));
 
         //Common mocks
         given(archerRepository.findById(anyLong()))
@@ -117,9 +119,9 @@ class ScoreControllerTests extends AbstractControllerTest {
     }
 
     @Test
-    void listAllScores() throws Exception {
-        given(scoreRepository.findByArcherIdAndArchived(anyLong(), anyBoolean(), any(Pageable.class)))
-                .willReturn(new PageImpl(List.of(score)));
+    void listAllRounds() throws Exception {
+        given(roundRepository.findByArcherIdAndArchived(anyLong(), anyBoolean(), any(Pageable.class)))
+                .willReturn(new PageImpl(List.of(round)));
 
         var pageJson = """
                 {
@@ -127,64 +129,64 @@ class ScoreControllerTests extends AbstractControllerTest {
                 "totalPages":1,
                 "isLastPage":true,
                 "isFirstPage":true,
-                "scores":[
+                "rounds":[
                 """ + json + "]}";
 
-        mvc.perform(get("/archers/1/scores")
-                        .headers(getHttpHeaders("/archers/1/scores")))
+        mvc.perform(get("/archers/1/rounds")
+                        .headers(getHttpHeaders("/archers/1/rounds")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(content().json(pageJson));
 
-        mvc.perform(get("/archers/1/scores?page=0&size=5")
-                        .headers(getHttpHeaders("/archers/1/scores?page=0&size=5")))
+        mvc.perform(get("/archers/1/rounds?page=0&size=5")
+                        .headers(getHttpHeaders("/archers/1/rounds?page=0&size=5")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(content().json(pageJson));
 
-        mvc.perform(get("/archers/1/scores?page=-1&size=20")
-                        .headers(getHttpHeaders("/archers/1/scores?page=-1&size=20")))
+        mvc.perform(get("/archers/1/rounds?page=-1&size=20")
+                        .headers(getHttpHeaders("/archers/1/rounds?page=-1&size=20")))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(content().json("""
                         {
                             "status": "BAD_REQUEST",
                             "errorMessage": "The value of page parameter can not be less then 0",
-                            "path": "/archers//archers/1/scores/scores"
+                            "path": "/archers/1/rounds"
                         }
                         """));
     }
 
     @Test
-    void getScore() throws Exception {
-        given(scoreRepository.findById(anyLong()))
-                .willReturn(Optional.of(score));
+    void getRound() throws Exception {
+        given(roundRepository.findById(anyLong()))
+                .willReturn(Optional.of(round));
 
-        mvc.perform(get("/archers/1/scores/1")
-                        .headers(getHttpHeaders("/archers/1/scores/1")))
+        mvc.perform(get("/archers/1/rounds/1")
+                        .headers(getHttpHeaders("/archers/1/rounds/1")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(content().json(json));
     }
 
     @Test
-    void addScore() throws Exception {
-        given(scoreRepository.save(any()))
-                .willReturn(score);
+    void addRound() throws Exception {
+        given(roundRepository.save(any()))
+                .willReturn(round);
         given(endRepository.save(any()))
                 .willReturn(end);
 
-        mvc.perform(post("/archers/1/scores/")
-                        .headers(getHttpHeaders("/archers/1/scores/"))
+        mvc.perform(post("/archers/1/rounds/")
+                        .headers(getHttpHeaders("/archers/1/rounds/"))
                         .contentType("application/json")
                         .content(json))
                 .andExpect(status().isOk());
     }
 
     @Test
-    void deleteScore() throws Exception {
-        mvc.perform(delete("/archers/1/scores/1")
-                        .headers(getHttpHeaders("/archers/1/scores/1")))
+    void deleteRound() throws Exception {
+        mvc.perform(delete("/archers/1/rounds/1")
+                        .headers(getHttpHeaders("/archers/1/rounds/1")))
                 .andExpect(status().isOk());
     }
 }
