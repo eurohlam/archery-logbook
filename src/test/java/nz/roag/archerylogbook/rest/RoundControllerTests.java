@@ -4,10 +4,7 @@ import nz.roag.archerylogbook.db.ArcherRepository;
 import nz.roag.archerylogbook.db.EndRepository;
 import nz.roag.archerylogbook.db.ShotRepository;
 import nz.roag.archerylogbook.db.RoundRepository;
-import nz.roag.archerylogbook.db.model.Archer;
-import nz.roag.archerylogbook.db.model.End;
-import nz.roag.archerylogbook.db.model.Shot;
-import nz.roag.archerylogbook.db.model.Round;
+import nz.roag.archerylogbook.db.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,7 +94,7 @@ class RoundControllerTests extends AbstractControllerTest {
         round = new Round();
         round.setArcherId(archer.getId());
         round.setDistance("30");
-        round.setTargetFace("122cm");
+        round.setTargetFace(TargetFace.TF_122cm);
         round.setCity("Nottingham");
         round.setRoundDate(Date.from(
                 LocalDateTime.of(2023, 1, 15, 11, 15)

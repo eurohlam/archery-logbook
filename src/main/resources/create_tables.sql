@@ -116,8 +116,8 @@ CREATE TABLE `archery_round` (
   INDEX `idx_archery_round_idarc` (`id`, `archived`),
   INDEX `idx_archery_round_archerarc` (`archer_id`, `archived`),
   INDEX `idx_archery_round_bowarc` (`bow_id`, `archived`),
-  CONSTRAINT `archery_round_ibfk_1` FOREIGN KEY (`archer_id`) REFERENCES `archery_archer` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `archery_round_ibfk_2` FOREIGN KEY (`bow_id`) REFERENCES `archery_bow` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `archery_round_arc_ibfk_1` FOREIGN KEY (`archer_id`) REFERENCES `archery_archer` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `archery_round_bow_ibfk_2` FOREIGN KEY (`bow_id`) REFERENCES `archery_bow` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
 INSERT INTO `archery_round` (`id`, `archer_id`, `bow_id`, `round_date`, `distance`, `target_face`, `comment`, `country`, `city`) VALUES

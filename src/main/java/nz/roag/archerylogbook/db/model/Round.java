@@ -41,7 +41,7 @@ public class Round {
 
     @Getter @Setter @NonNull
     @Column(nullable = false)
-    private String targetFace;
+    private TargetFace targetFace;
 
     @Getter @Setter
     @Column
@@ -82,6 +82,6 @@ public class Round {
 
     @Override
     public String toString() {
-        return String.format("{ id: %d, roundDate: %s, match: %s, shots: %d, sum: %d, avg: %s }", getId(), getRoundDate(), getDistance(), getShotsCount(), getSum(), getAvg());
+        return String.format("{ id: %d, roundDate: %s, distance: %s, targetFace: %s, shots: %d, sum: %d, avg: %s }", getId(), getRoundDate(), getDistance(), getTargetFace(), getShotsCount(), getSum(), getAvg());
     }
 }

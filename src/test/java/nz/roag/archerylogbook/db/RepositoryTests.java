@@ -138,7 +138,7 @@ class RepositoryTests {
         var round = new Round();
         round.setArcherId(archerId);
         round.setDistance("30");
-        round.setTargetFace("122cm");
+        round.setTargetFace(TargetFace.TF_80cm);
         round.setCity("Nottingham");
         round.setRoundDate(new Date());
         round.setCountry("England");

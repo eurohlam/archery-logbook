@@ -743,7 +743,8 @@ a concatenation of `path + key + nonce + timestamp`"
         - archerId
         - bowId
         - roundDate
-        - match
+        - distance
+        - targetFace
       type: object
       properties:
         id:
@@ -759,9 +760,17 @@ a concatenation of `path + key + nonce + timestamp`"
           type: string
           format: dateTime
           example: "10/06/2023T23:01:18,000"
-        match:
+        distance:
           type: string
           example: "30"
+        targetFace:
+          example: "122cm"
+          type: enum
+            - 122cm
+            - 80cm
+            - 60cm
+            - 40cm
+            - Multi-spot
         comment:
           type: string
         country:
