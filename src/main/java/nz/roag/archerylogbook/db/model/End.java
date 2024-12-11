@@ -17,27 +17,27 @@ public class End {
     private long id;
 
     @Getter @Setter
-    @Column(name = "score_id", nullable = false)
-    private long scoreId;
+    @Column(name = "round_id", nullable = false)
+    private long roundId;
 
     @Getter @Setter
     @Column(nullable = false)
     private short endNumber;
 
     @Getter @Setter
-    @OneToMany(targetEntity = Round.class, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = Shot.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "end_id")
-    private List<Round> rounds = new ArrayList<>();
+    private List<Shot> shots = new ArrayList<>();
 
-    public int getRoundsCount() {
-        return rounds.size();
+    public int getShotsCount() {
+        return shots.size();
     }
 
     public int getSum() {
-        return rounds.stream().reduce(0, (sum, round) -> sum + round.getRoundScore(), Integer::sum);
+        return shots.stream().reduce(0, (sum, shot) -> sum + shot.getShotScore(), Integer::sum);
     }
 
     public String getAvg() {
-        return String.format("%.2f", (double)getSum()/ getRoundsCount());
+        return String.format("%.2f", (double)getSum()/ getShotsCount());
     }
 }

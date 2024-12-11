@@ -3,7 +3,7 @@ info:
   title: Archer's Log Book
   description: |-
     This is a springboot based REST API that helps to build a back-end for [Archer's Log Book](https://roundkick.nz) project
-    Archer's Log Book helps archers to manage their scores, bows and overall progress.
+    Archer's Log Book helps archers to manage their rounds, bows and overall progress.
     
   license:
     name: Apache 3.0
@@ -18,8 +18,8 @@ tags:
     description: management of archers
   - name: bows
     description: management of bows
-  - name: scores
-    description: management of scores
+  - name: rounds
+    description: management of rounds
 
 paths:
   /clubs:
@@ -431,13 +431,13 @@ paths:
         '404':
           description: Bow not found
 
-  /archers/{archerId}/scores:
+  /archers/{archerId}/rounds:
     get:
       tags:
-        - scores
-      summary: Get all scores for current archer
-      description: Returns a list of scores for current archer
-      operationId: listAllScores
+        - rounds
+      summary: Get all rounds for current archer
+      description: Returns a list of rounds for current archer
+      operationId: listAllRounds
       parameters:
         - $ref: '#/components/parameters/key'
         - $ref: '#/components/parameters/nonce'
@@ -475,17 +475,17 @@ paths:
               schema:
                 type: object
                 items:
-                  $ref: '#/components/schemas/ScorePage'
+                  $ref: '#/components/schemas/RoundPage'
         '404':
           description: Archer not found
 
-  /archers/{archerId}/scores/:
+  /archers/{archerId}/rounds/:
     post:
       tags:
-        - scores
-      summary: Add a new score for current archer
-      description: Add a new score for current archer
-      operationId: addScore
+        - rounds
+      summary: Add a new round for current archer
+      description: Adds a new round for current archer
+      operationId: addRound
       parameters:
         - $ref: '#/components/parameters/key'
         - $ref: '#/components/parameters/nonce'
@@ -502,20 +502,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Score'
+              $ref: '#/components/schemas/Round'
       responses:
         '200':
           description: successful operation
         '404':
           description: Archer not found
 
-  /archers/{archerId}/scores/{scoreId}:
+  /archers/{archerId}/rounds/{roundId}:
     get:
       tags:
-        - scores
-      summary: Get score by ID
-      description: Returns a single score for current archer
-      operationId: getScore
+        - rounds
+      summary: Get round by ID
+      description: Returns a single round for current archer
+      operationId: getRound
       parameters:
         - $ref: '#/components/parameters/key'
         - $ref: '#/components/parameters/nonce'
@@ -528,9 +528,9 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: scoreId
+        - name: roundId
           in: path
-          description: Score ID
+          description: Round ID
           required: true
           schema:
             type: integer
@@ -543,15 +543,15 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Score'
+                  $ref: '#/components/schemas/Round'
         '404':
-          description: Score not found
+          description: Round not found
     delete:
       tags:
-        - scores
-      summary: Delete score by ID
-      description: Delete score
-      operationId: deleteScore
+        - rounds
+      summary: Delete round by ID
+      description: Delete round
+      operationId: deleteRound
       parameters:
         - $ref: '#/components/parameters/key'
         - $ref: '#/components/parameters/nonce'
@@ -564,9 +564,9 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: scoreId
+        - name: roundId
           in: path
-          description: Score ID
+          description: Round ID
           required: true
           schema:
             type: integer
@@ -666,10 +666,10 @@ a concatenation of `path + key + nonce + timestamp`"
           type: array
           items:
             $ref: '#/components/schemas/Bow'
-        scoreList:
+        roundList:
           type: array
           items:
-            $ref: '#/components/schemas/Score'
+            $ref: '#/components/schemas/Round'
     Bow:
       required:
         - archerId
@@ -738,12 +738,13 @@ a concatenation of `path + key + nonce + timestamp`"
           example: "53 mm"
         isTested:
           type: boolean
-    Score:
+    Round:
       required:
-        - archerID
+        - archerId
         - bowId
-        - scoreDate
-        - match
+        - roundDate
+        - distance
+        - targetFace
       type: object
       properties:
         id:
@@ -755,13 +756,21 @@ a concatenation of `path + key + nonce + timestamp`"
         bowId:
           type: integer
           example: 1
-        scoreDate:
+        roundDate:
           type: string
           format: dateTime
           example: "10/06/2023T23:01:18,000"
-        match:
+        distance:
           type: string
           example: "30"
+        targetFace:
+          example: "122cm"
+          type: enum
+            - 122cm
+            - 80cm
+            - 60cm
+            - 40cm
+            - Multi-spot
         comment:
           type: string
         country:
@@ -780,18 +789,18 @@ a concatenation of `path + key + nonce + timestamp`"
         id:
           type: integer
           example: 1
-        scoreId:
+        roundId:
           type: integer
           example: 1
         endNumber:
           type: integer
           example: 1
           minimum: 1
-        rounds:
+        shots:
           type: array
           items:
-            $ref: '#/components/schemas/Round'
-    Round:
+            $ref: '#/components/schemas/Shot'
+    Shot:
       type: object
       properties:
         id:
@@ -800,17 +809,17 @@ a concatenation of `path + key + nonce + timestamp`"
         endId:
           type: integer
           example: 1
-        roundNumber:
+        shotNumber:
           type: integer
           example: 3
           minimum: 1
           maximum: 6
-        roundScore:
+        shotScore:
           type: integer
           example: 8
           minimum: 0
           maximum: 10
-    ScorePage:
+    RoundPage:
       type: object
       properties:
         pageNumber:
@@ -825,10 +834,10 @@ a concatenation of `path + key + nonce + timestamp`"
           type: boolean
         isLastPage:
           type: boolean
-        scores:
+        rounds:
           type: array
           items:
-            $ref: '#/components/schemas/Score'
+            $ref: '#/components/schemas/Round'
 
 
 

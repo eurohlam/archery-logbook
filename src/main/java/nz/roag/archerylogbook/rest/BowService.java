@@ -72,7 +72,7 @@ public class BowService {
     public void deleteBow(long id) {
         logger.warn("Deleting bow with id {}", id);
         //we do not delete the bow, just mark it as archived
-        //it will allow us to show scores for deleted bows
+        //it will allow us to show rounds for deleted bows
         bowRepository.setArchivedForBowId(true, id);
     }
 
