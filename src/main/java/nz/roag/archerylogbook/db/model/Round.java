@@ -41,6 +41,7 @@ public class Round {
 
     @Getter @Setter @NonNull
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private TargetFace targetFace;
 
     @Getter @Setter
