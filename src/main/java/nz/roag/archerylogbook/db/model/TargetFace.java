@@ -11,9 +11,9 @@ public enum TargetFace {
     TF_MULTI_SPOT("Multi-spot");
 
 
-    private String targetFace;
+    private final String targetFace;
 
-    TargetFace(String targetFace) {
+    TargetFace(final String targetFace) {
         this.targetFace = targetFace;
     }
 

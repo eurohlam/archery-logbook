@@ -42,9 +42,15 @@ public class RoundService {
     }
 
     @Transactional
-    public void addRound(long archerId, Round round) throws NoSuchElementException {
+    public void addRound(long archerId, Round round) throws NoSuchElementException, IllegalArgumentException {
         logger.info("Adding a new round {} for archerId {}", round, archerId);
         Archer archer = archerRepository.findById(archerId).orElseThrow(() -> new NoSuchElementException("Archer not found. archerId=" + archerId));
+        if (round.getEndsCount() == 0) {
+            throw new IllegalArgumentException("Round has to have at least one end");
+        }
+        if (round.getEnds().stream().anyMatch(e -> e.getShotsCount()==0)) {
+            throw new IllegalArgumentException("End has to have at least one shot");
+        }
         round.setArcherId(archer.getId());
         var ends = round.getEnds();
         round.setEnds(Collections.emptyList());

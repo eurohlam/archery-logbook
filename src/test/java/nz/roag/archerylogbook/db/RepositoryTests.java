@@ -28,6 +28,8 @@ class RepositoryTests {
     private BowRepository bowRepository;
     @Autowired
     private RoundRepository roundRepository;
+    @Autowired
+    private CompetitionRepository competitionRepository;
 
     private long clubId;
     private final long archerId = 1L;
@@ -191,5 +193,67 @@ class RepositoryTests {
         roundRepository.setArchivedForRoundId(true, pageableRounds.getContent().get(0).getId());
         pageableRounds = roundRepository.findByArcherIdAndArchived(archerId, false, PageRequest.of(0,5, Sort.by("roundDate").ascending()));
         Assertions.assertEquals(0, pageableRounds.getContent().size());
+    }
+
+    @Test
+    void competitionRepositoryTest() {
+        var bow = new Bow();
+        bow.setName("Test bow");
+        bow.setType(Bow.Type.RECURVE);
+        bow.setLevel(Bow.Level.INTERMEDIATE);
+        bow.setPoundage("44-44");
+        bow.setRiserModel("test riser");
+        bow.setLimbsModel("test limbs");
+        bow.setArcherId(archerId);
+        var storedBow = entityManager.persist(bow);
+
+        var competition = new Competition();
+        competition.setArcherId(archerId);
+        competition.setCompetitionType(Competition.CompetitionType.WA1440);
+        competition.setCountry("England");
+        competition.setCity("Nottingham");
+        var storedCompetition = entityManager.persist(competition);
+
+        var round = new Round();
+        round.setArcherId(archerId);
+        round.setDistance("30");
+        round.setTargetFace(TargetFace.TF_80cm);
+        round.setCity("Nottingham");
+        round.setRoundDate(new Date());
+        round.setCountry("England");
+        round.setBowId(storedBow.getId());
+        round.setCompetitionId(storedCompetition.getId());
+        var storedRound = entityManager.persist(round);
+
+        var end = new End();
+        end.setEndNumber((short) 1);
+        end.setRoundId(storedRound.getId());
+        var storedEnd = entityManager.persist(end);
+
+        var shot = new Shot();
+        shot.setShotNumber((short) 1);
+        shot.setShotScore((short) 10);
+        shot.setEndId(storedEnd.getId());
+        end.setShots(List.of(shot));
+        round.setEnds(List.of(end));
+        entityManager.persist(round);
+        competition.setRounds(List.of(round));
+        entityManager.persist(competition);
+
+        var competitions = competitionRepository.findByArcherId(archerId, Sort.by("competitionDate").descending());
+        Assertions.assertEquals(Competition.CompetitionType.WA1440, competitions.get(0).getCompetitionType());
+        Assertions.assertEquals("Nottingham", competitions.get(0).getCity());
+        Assertions.assertEquals(1, competitions.get(0).getRounds().size());
+        Assertions.assertEquals(1, competitions.get(0).getRounds().get(0).getShotsCount());
+
+        var pageableCompetitions = competitionRepository.findByArcherId(archerId, PageRequest.of(0,5, Sort.by("competitionDate").descending()));
+        Assertions.assertEquals(Competition.CompetitionType.WA1440, pageableCompetitions.getContent().get(0).getCompetitionType());
+        Assertions.assertEquals("Nottingham", pageableCompetitions.getContent().get(0).getCity());
+        Assertions.assertEquals(1, pageableCompetitions.getContent().get(0).getRounds().size());
+        Assertions.assertEquals(1, pageableCompetitions.getContent().get(0).getRounds().get(0).getShotsCount());
+
+        pageableCompetitions = competitionRepository.findByArcherIdAndCompetitionType(archerId, Competition.CompetitionType.WA1440, PageRequest.of(0,5, Sort.by("competitionDate").descending()));
+        Assertions.assertEquals(Competition.CompetitionType.WA1440, pageableCompetitions.getContent().get(0).getCompetitionType());
+        Assertions.assertEquals(1, pageableCompetitions.getContent().get(0).getRounds().size());
     }
 }

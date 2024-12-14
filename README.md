@@ -40,7 +40,7 @@ The API is designed to work with MySQL/MariaDB as a database. In local environme
         --env DB_PWD=hood \
         -p 7878:7878 \
         --detach \
-        eurohlam/archery-logbook:1.0.4
+        eurohlam/archery-logbook:1.0.6
 
 ## Security
 

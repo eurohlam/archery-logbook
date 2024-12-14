@@ -26,6 +26,10 @@ public class Round {
     @Column(name = "bow_id", nullable = false)
     private Long bowId;
 
+    @Getter @Setter
+    @Column(name = "competition_id", nullable = true)
+    private Long competitionId;
+
     @Getter
     @OneToOne(targetEntity = Bow.class)
     @JoinColumn(name = "bow_id", referencedColumnName = "id", insertable = false, updatable = false)

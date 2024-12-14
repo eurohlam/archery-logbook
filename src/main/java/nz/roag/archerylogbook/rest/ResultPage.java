@@ -6,7 +6,7 @@ import lombok.Setter;
 import java.util.List;
 
 @Getter
-public class RoundPage<Round> {
+public class ResultPage<T> {
 
     @Setter
     private int pageNumber = 0;
@@ -21,5 +21,5 @@ public class RoundPage<Round> {
     private Boolean isFirstPage = true;
 
     @Setter
-    private List<Round> rounds;
+    private List<T> items;
 }

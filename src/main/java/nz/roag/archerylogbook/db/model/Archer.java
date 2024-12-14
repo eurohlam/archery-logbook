@@ -44,6 +44,11 @@ public class Archer {
     @JoinColumn(name = "archer_id")
     private List<Round> roundList = new ArrayList<>();
 
+    @Getter @Setter
+    @OneToMany(targetEntity = Competition.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "archer_id")
+    private List<Competition> competitionList = new ArrayList<>();
+
     @Override
     public String toString() {
         return String.format("{ id: %d, firstName: %s, lastName: %s, email: %s }", id, firstName, lastName, email);

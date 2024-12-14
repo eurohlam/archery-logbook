@@ -23,7 +23,7 @@ services:
   app:
     build:
       context: .
-    image: eurohlam/archery-logbook:1.0.5
+    image: eurohlam/archery-logbook:1.0.6
     container_name: archery-logbook
     restart: always
     environment:

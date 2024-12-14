@@ -1,9 +1,6 @@
 package nz.roag.archerylogbook.rest;
 
-import nz.roag.archerylogbook.db.ArcherRepository;
-import nz.roag.archerylogbook.db.EndRepository;
-import nz.roag.archerylogbook.db.ShotRepository;
-import nz.roag.archerylogbook.db.RoundRepository;
+import nz.roag.archerylogbook.db.*;
 import nz.roag.archerylogbook.db.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +12,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
@@ -22,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -29,13 +28,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class RoundControllerTests extends AbstractControllerTest {
+public class CompetitionControllerTest extends AbstractControllerTest {
 
     @Autowired
     private MockMvc mvc;
 
     @MockBean
     private ArcherRepository archerRepository;
+    @MockBean
+    private CompetitionRepository competitionRepository;
     @MockBean
     private RoundRepository roundRepository;
     @MockBean
@@ -44,10 +45,17 @@ class RoundControllerTests extends AbstractControllerTest {
     private ShotRepository shotRepository;
 
     private Archer archer;
+    private Competition competition;
     private Round round;
     private End end;
     private final String json = """
             {
+             "id": 0,
+             "archerId": 1,
+             "competitionDate": "2024-12-14",
+             "competitionType": "Short Canadian 1200",
+             "rounds": [
+               {
                 "id":0,
                 "archerId":1,
                 "bowId": null,
@@ -77,6 +85,7 @@ class RoundControllerTests extends AbstractControllerTest {
                     "avg":"10.00",
                     "endsCount":1
                 }]
+              }]
             }
             """;
 
@@ -110,15 +119,21 @@ class RoundControllerTests extends AbstractControllerTest {
         end.setShots(List.of(shot));
         round.setEnds(List.of(end));
 
+        competition = new Competition();
+        competition.setCompetitionType(Competition.CompetitionType.SHORT_CANADIAN_1200);
+        competition.setCompetitionDate(LocalDate.of(2024,12,14));
+        competition.setArcherId(archer.getId());
+        competition.setRounds(List.of(round));
+
         //Common mocks
         given(archerRepository.findById(anyLong()))
                 .willReturn(Optional.of(archer));
     }
 
     @Test
-    void listAllRounds() throws Exception {
-        given(roundRepository.findByArcherIdAndArchived(anyLong(), anyBoolean(), any(Pageable.class)))
-                .willReturn(new PageImpl(List.of(round)));
+    void listAllCompetitions() throws Exception {
+        given(competitionRepository.findByArcherId(anyLong(), any(Pageable.class)))
+                .willReturn(new PageImpl(List.of(competition)));
 
         var pageJson = """
                 {
@@ -129,52 +144,56 @@ class RoundControllerTests extends AbstractControllerTest {
                 "items":[
                 """ + json + "]}";
 
-        mvc.perform(get("/archers/1/rounds")
-                        .headers(getHttpHeaders("/archers/1/rounds")))
+        mvc.perform(get("/archers/1/competitions")
+                        .headers(getHttpHeaders("/archers/1/competitions")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(content().json(pageJson));
 
-        mvc.perform(get("/archers/1/rounds?page=0&size=5")
-                        .headers(getHttpHeaders("/archers/1/rounds?page=0&size=5")))
+        mvc.perform(get("/archers/1/competitions?page=0&size=5")
+                        .headers(getHttpHeaders("/archers/1/competitions?page=0&size=5")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(content().json(pageJson));
 
-        mvc.perform(get("/archers/1/rounds?page=-1&size=20")
-                        .headers(getHttpHeaders("/archers/1/rounds?page=-1&size=20")))
+        mvc.perform(get("/archers/1/competitions?page=-1&size=20")
+                        .headers(getHttpHeaders("/archers/1/competitions?page=-1&size=20")))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(content().json("""
                         {
                             "status": "BAD_REQUEST",
                             "errorMessage": "The value of page parameter can not be less then 0",
-                            "path": "/archers/1/rounds"
+                            "path": "/archers/1/competitions"
                         }
                         """));
     }
 
     @Test
-    void getRound() throws Exception {
-        given(roundRepository.findById(anyLong()))
-                .willReturn(Optional.of(round));
+    void getCompetition() throws Exception {
+        given(competitionRepository.findById(anyLong()))
+                .willReturn(Optional.of(competition));
 
-        mvc.perform(get("/archers/1/rounds/1")
-                        .headers(getHttpHeaders("/archers/1/rounds/1")))
+        mvc.perform(get("/archers/1/competitions/1")
+                        .headers(getHttpHeaders("/archers/1/competitions/1")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(content().json(json));
     }
 
     @Test
-    void addRound() throws Exception {
+    void addCompetition() throws Exception {
+        given(competitionRepository.save(any()))
+                .willReturn(competition);
         given(roundRepository.save(any()))
                 .willReturn(round);
         given(endRepository.save(any()))
                 .willReturn(end);
 
-        String roundJson = """
+        String competitionJson = """
             {
+            "competitionType": "WA1440",
+            "rounds": [{
                 "distance":"30",
                 "targetFace":"122cm",
                 "ends":[
@@ -213,71 +232,22 @@ class RoundControllerTests extends AbstractControllerTest {
                         ]
                     }
                 ]
+              }]
             }
             """;
 
-        mvc.perform(post("/archers/1/rounds/")
-                        .headers(getHttpHeaders("/archers/1/rounds/"))
+        mvc.perform(post("/archers/1/competitions/")
+                        .headers(getHttpHeaders("/archers/1/competitions/"))
                         .contentType("application/json")
-                        .content(roundJson))
+                        .content(competitionJson))
                 .andExpect(status().isOk());
     }
 
-    @Test
-    void addRoundFailure() throws Exception {
-        String noEndsRound = """
-            {
-                "distance":"30",
-                "targetFace":"122cm"
-            }
-            """;
-        mvc.perform(post("/archers/1/rounds/")
-                        .headers(getHttpHeaders("/archers/1/rounds/"))
-                        .contentType("application/json")
-                        .content(noEndsRound))
-                .andExpect(status().isBadRequest());
-
-        String emptyEndRound = """
-            {
-                "distance":"30",
-                "targetFace":"122cm",
-                "ends":[
-                    {
-                        "endNumber":1,
-                        "shots":[
-                            {
-                                "shotNumber":1,
-                                "shotScore":10
-                            },
-                            {
-                                "shotNumber":2,
-                                "shotScore":10
-                            },
-                            {
-                                "shotNumber":3,
-                                "shotScore":10
-                            }
-                        ]
-                    },
-                    {
-                        "endNumber": 2,
-                        "shots":[]
-                    }
-                ]
-            }
-            """;
-        mvc.perform(post("/archers/1/rounds/")
-                        .headers(getHttpHeaders("/archers/1/rounds/"))
-                        .contentType("application/json")
-                        .content(emptyEndRound))
-                .andExpect(status().isBadRequest());
-
-    }
 
     @Test
-    void deleteRound() throws Exception {
-        mvc.perform(delete("/archers/1/rounds/1")
-                        .headers(getHttpHeaders("/archers/1/rounds/1")))
+    void deleteCompetition() throws Exception {
+        mvc.perform(delete("/archers/1/competitions/1")
+                        .headers(getHttpHeaders("/archers/1/competitions/1")))
                 .andExpect(status().isOk());
     }
 }
