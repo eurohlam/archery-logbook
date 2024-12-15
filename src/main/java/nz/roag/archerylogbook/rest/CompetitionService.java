@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import nz.roag.archerylogbook.db.*;
 import nz.roag.archerylogbook.db.model.Archer;
 import nz.roag.archerylogbook.db.model.Competition;
-import nz.roag.archerylogbook.db.model.Round;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +26,6 @@ public class CompetitionService {
     @Autowired
     private ArcherRepository archerRepository;
 
-    @Autowired
-    private RoundService roundService;
-
     public Page<Competition> listAllCompetitions(long archerId, int page, int size) throws NoSuchElementException {
         logger.debug("Getting competitions for archerId {}; page {} size {}", archerId, page, size);
         var archer = archerRepository.findById(archerId).orElseThrow(() -> new NoSuchElementException("Archer not found. archerId=" + archerId));
@@ -46,14 +42,11 @@ public class CompetitionService {
         Archer archer = archerRepository.findById(archerId).orElseThrow(() -> new NoSuchElementException("Archer not found. archerId=" + archerId));
 
         competition.setArcherId(archer.getId());
-        var rounds = competition.getRounds();
-        competition.setRounds(Collections.emptyList());
-        var storedCompetition = competitionRepository.save(competition);
-        for (var round : rounds) {
+        //TODO: remove after fixing onetomany
+        for (var round : competition.getRounds()) {
             round.setArcherId(archer.getId());
-            round.setCompetitionId(storedCompetition.getId());
-            roundService.addRound(archerId, round);
         }
+        competitionRepository.save(competition);
     }
 
     @Transactional

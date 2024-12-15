@@ -68,12 +68,10 @@ public class CompetitionControllerTest extends AbstractControllerTest {
                 "ends":[
                     {
                         "id":0,
-                        "roundId":0,
                         "endNumber":1,
                         "shots":[
                             {
                                 "id":0,
-                                "endId":0,
                                 "shotNumber":1,
                                 "shotScore":10
                             }],

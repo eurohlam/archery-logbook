@@ -88,19 +88,16 @@ class RepositoryTests {
         var ds1 = new DistanceSettings();
         ds1.setDistance(20);
         ds1.setSight("6");
-        ds1.setBowId(storedBow.getId());
         ds1.setIsTested(true);
         storedBow.getDistanceSettingsList().add(ds1);
         var ds2 = new DistanceSettings();
         ds2.setDistance(10);
         ds2.setSight("5");
-        ds2.setBowId(storedBow.getId());
         ds2.setIsTested(true);
         storedBow.getDistanceSettingsList().add(ds2);
         var ds3 = new DistanceSettings();
         ds3.setDistance(15);
         ds3.setSight("5");
-        ds3.setBowId(storedBow.getId());
         ds3.setIsTested(true);
         storedBow.getDistanceSettingsList().add(ds3);
         entityManager.persist(storedBow);
@@ -145,17 +142,13 @@ class RepositoryTests {
         round.setRoundDate(new Date());
         round.setCountry("England");
         round.setBowId(storedBow.getId());
-        var storedRound = entityManager.persist(round);
 
         var end = new End();
         end.setEndNumber((short) 1);
-        end.setRoundId(storedRound.getId());
-        var storedEnd = entityManager.persist(end);
 
         var shot = new Shot();
         shot.setShotNumber((short) 1);
         shot.setShotScore((short) 10);
-        shot.setEndId(storedEnd.getId());
         end.setShots(List.of(shot));
         round.setEnds(List.of(end));
         entityManager.persist(round);
@@ -193,6 +186,9 @@ class RepositoryTests {
         roundRepository.setArchivedForRoundId(true, pageableRounds.getContent().get(0).getId());
         pageableRounds = roundRepository.findByArcherIdAndArchived(archerId, false, PageRequest.of(0,5, Sort.by("roundDate").ascending()));
         Assertions.assertEquals(0, pageableRounds.getContent().size());
+
+        pageableRounds = roundRepository.findByArcherIdAndDistanceAndArchived(archerId, "30",true, PageRequest.of(0,5, Sort.by("roundDate").ascending()));
+        Assertions.assertEquals(1, pageableRounds.getContent().size());
     }
 
     @Test
@@ -212,7 +208,6 @@ class RepositoryTests {
         competition.setCompetitionType(Competition.CompetitionType.WA1440);
         competition.setCountry("England");
         competition.setCity("Nottingham");
-        var storedCompetition = entityManager.persist(competition);
 
         var round = new Round();
         round.setArcherId(archerId);
@@ -222,21 +217,15 @@ class RepositoryTests {
         round.setRoundDate(new Date());
         round.setCountry("England");
         round.setBowId(storedBow.getId());
-        round.setCompetitionId(storedCompetition.getId());
-        var storedRound = entityManager.persist(round);
 
         var end = new End();
         end.setEndNumber((short) 1);
-        end.setRoundId(storedRound.getId());
-        var storedEnd = entityManager.persist(end);
 
         var shot = new Shot();
         shot.setShotNumber((short) 1);
         shot.setShotScore((short) 10);
-        shot.setEndId(storedEnd.getId());
         end.setShots(List.of(shot));
         round.setEnds(List.of(end));
-        entityManager.persist(round);
         competition.setRounds(List.of(round));
         entityManager.persist(competition);
 

@@ -14,12 +14,9 @@ public class DistanceSettings implements Comparable<DistanceSettings> {
     private long id;
 
     @Getter @Setter
-    @Column(name = "bow_id", nullable = false)
-    private long bowId;
-
-    @Getter @Setter
     @Column(nullable = false)
     private int distance;
+
     @Getter @Setter
     @Column(nullable = false)
     private String sight;

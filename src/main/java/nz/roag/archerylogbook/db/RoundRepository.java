@@ -40,6 +40,16 @@ public interface RoundRepository extends JpaRepository<Round, Long> {
      */
     Page<Round> findByArcherIdAndDistance(long archerId, String distance, Pageable page);
 
+    /**
+     * Returns rounds for current archerId filtered by `distance` and `archived` flag
+     * @param archerId
+     * @param distance
+     * @param archived - if archived=false then return rounds that are actual. If archived=true then returns rounds that have been marked as removed by user
+     * @param page
+     * @return rounds for current archerId filtered by `distance` and `archived` flag
+     */
+    Page<Round> findByArcherIdAndDistanceAndArchived(long archerId, String distance, boolean archived, Pageable page);
+
     @Modifying
     @Query("update Round set archived=?1 where id=?2")
     void setArchivedForRoundId(boolean archived, long roundId);

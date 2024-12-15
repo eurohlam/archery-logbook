@@ -80,7 +80,6 @@ public class BowService {
     public void addDistanceSettings(long bowId, DistanceSettings distanceSettings) throws NoSuchElementException {
         logger.debug("Adding distance setting {} for bowId={}", distanceSettings, bowId);
         var bow = getBow(bowId);
-        distanceSettings.setBowId(bowId);
 
         if (bow.getDistanceSettingsList()
                 .stream()

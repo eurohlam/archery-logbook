@@ -14,10 +14,6 @@ public class Shot {
     private long id;
 
     @Getter @Setter
-    @Column(name = "end_id", nullable = false)
-    private long endId;
-
-    @Getter @Setter
     @Column(nullable = false)
     private short shotNumber;
 

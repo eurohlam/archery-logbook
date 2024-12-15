@@ -51,20 +51,10 @@ public class RoundService {
         if (round.getEnds().stream().anyMatch(e -> e.getShotsCount()==0)) {
             throw new IllegalArgumentException("End has to have at least one shot");
         }
-        round.setArcherId(archer.getId());
-        var ends = round.getEnds();
-        round.setEnds(Collections.emptyList());
-        Round persistedRound = roundRepository.save(round);
-        for (var end: ends) {
-            end.setRoundId(persistedRound.getId());
-            var shots = end.getShots();
-            end.setShots(Collections.emptyList());
-            var persistedEnd = endRepository.save(end);
-            for (var shot: shots) {
-                shot.setEndId(persistedEnd.getId());
-                shotRepository.save(shot);
-            }
-        }
+        round.setArcherId(archer.getId());//TODO: remove after fixing onetomany relation
+
+        roundRepository.save(round);
+
     }
 
     public Round getRound(long id) throws NoSuchElementException {
