@@ -15,17 +15,22 @@ public interface CompetitionRepository extends JpaRepository<Competition, Long> 
     /**
      * Returns all competitions for current archerId ignoring `archived` flag
      * @param archerId
+     * @param archived - if archived=false then return competitions that are actual. If archived=true then returns competitions that have been marked as removed by user
      * @param page
      * @return all competitions for current archerId
      */
-    Page<Competition> findByArcherId(long archerId, Pageable page);
+    Page<Competition> findByArcherIdAndArchived(long archerId, boolean archived, Pageable page);
 
     /**
      * Returns all competitions of current competitionType for current archerId
      * @param archerId
      * @param competitionType
+     * @param archived - if archived=false then return competitions that are actual. If archived=true then returns competitions that have been marked as removed by user
      * @param page
      * @return all competitions of current competitionType for current archerId
      */
-    Page<Competition> findByArcherIdAndCompetitionType(long archerId, Competition.CompetitionType competitionType, Pageable page);
+    Page<Competition> findByArcherIdAndCompetitionTypeAndArchived(long archerId,
+                                                                  Competition.CompetitionType competitionType,
+                                                                  boolean archived,
+                                                                  Pageable page);
 }

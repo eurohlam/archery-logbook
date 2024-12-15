@@ -69,8 +69,11 @@ class RepositoryTests {
         Assertions.assertEquals("Robin", archer.getFirstName());
         Assertions.assertEquals("robin@hood.arch", archer.getEmail());
 
-        var archers = archerRepository.findByClubIdOrderByLastNameAsc(clubId);
-        Assertions.assertEquals("Hood", archers.get(0).getLastName());
+        var archers = archerRepository.findByClubIdOrderByLastNameAsc(clubId, PageRequest.of(0,5, Sort.by("lastName").ascending()));
+        Assertions.assertEquals("Hood", archers.getContent().get(0).getLastName());
+
+        archers = archerRepository.findByArchived(false, PageRequest.of(0,5, Sort.by("lastName").ascending()));
+        Assertions.assertEquals("Hood", archers.getContent().get(0).getLastName());
     }
 
     @Test
@@ -235,13 +238,16 @@ class RepositoryTests {
         Assertions.assertEquals(1, competitions.get(0).getRounds().size());
         Assertions.assertEquals(1, competitions.get(0).getRounds().get(0).getShotsCount());
 
-        var pageableCompetitions = competitionRepository.findByArcherId(archerId, PageRequest.of(0,5, Sort.by("competitionDate").descending()));
+        var pageableCompetitions = competitionRepository.findByArcherIdAndArchived(archerId, false,
+                PageRequest.of(0,5, Sort.by("competitionDate").descending()));
         Assertions.assertEquals(Competition.CompetitionType.WA1440, pageableCompetitions.getContent().get(0).getCompetitionType());
         Assertions.assertEquals("Nottingham", pageableCompetitions.getContent().get(0).getCity());
         Assertions.assertEquals(1, pageableCompetitions.getContent().get(0).getRounds().size());
         Assertions.assertEquals(1, pageableCompetitions.getContent().get(0).getRounds().get(0).getShotsCount());
 
-        pageableCompetitions = competitionRepository.findByArcherIdAndCompetitionType(archerId, Competition.CompetitionType.WA1440, PageRequest.of(0,5, Sort.by("competitionDate").descending()));
+        pageableCompetitions = competitionRepository.findByArcherIdAndCompetitionTypeAndArchived(archerId,
+                Competition.CompetitionType.WA1440, false,
+                PageRequest.of(0,5, Sort.by("competitionDate").descending()));
         Assertions.assertEquals(Competition.CompetitionType.WA1440, pageableCompetitions.getContent().get(0).getCompetitionType());
         Assertions.assertEquals(1, pageableCompetitions.getContent().get(0).getRounds().size());
     }

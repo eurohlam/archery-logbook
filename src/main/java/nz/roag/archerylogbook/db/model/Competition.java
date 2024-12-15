@@ -67,6 +67,9 @@ public class Competition {
     private String city;
 
     @Getter @Setter
+    private Boolean archived = false;
+
+    @Getter @Setter
     @OneToMany(targetEntity = Round.class, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "competition_id")
     private List<Round> rounds = new ArrayList<>();

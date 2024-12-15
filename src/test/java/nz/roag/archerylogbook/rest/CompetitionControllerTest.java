@@ -130,7 +130,7 @@ public class CompetitionControllerTest extends AbstractControllerTest {
 
     @Test
     void listAllCompetitions() throws Exception {
-        given(competitionRepository.findByArcherId(anyLong(), any(Pageable.class)))
+        given(competitionRepository.findByArcherIdAndArchived(anyLong(), anyBoolean(), any(Pageable.class)))
                 .willReturn(new PageImpl(List.of(competition)));
 
         var pageJson = """

@@ -106,9 +106,10 @@ CREATE TABLE `archery_competition` (
   `country` varchar(50) DEFAULT NULL,
   `city` varchar(50) DEFAULT NULL,
   `comment` longtext,
+  `archived` boolean DEFAULT false,
   PRIMARY KEY (`id`),
-  INDEX `idx_archery_cmpt_type` (`archer_id`, `competition_type`),
-  INDEX `idx_archery_cmpt_archer` (`archer_id`),
+  INDEX `idx_archery_cmpt_type` (`archer_id`, `competition_type`, `archived`),
+  INDEX `idx_archery_cmpt_archer` (`archer_id`, `archived`),
   CONSTRAINT `archery_cmpt_arc_ibfk_1` FOREIGN KEY (`archer_id`) REFERENCES `archery_archer` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 );
 

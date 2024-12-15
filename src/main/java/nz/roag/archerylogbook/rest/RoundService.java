@@ -15,7 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.NoSuchElementException;
 
 @Service
@@ -51,10 +50,8 @@ public class RoundService {
         if (round.getEnds().stream().anyMatch(e -> e.getShotsCount()==0)) {
             throw new IllegalArgumentException("End has to have at least one shot");
         }
-        round.setArcherId(archer.getId());//TODO: remove after fixing onetomany relation
-
+        round.setArcherId(archer.getId());
         roundRepository.save(round);
-
     }
 
     public Round getRound(long id) throws NoSuchElementException {

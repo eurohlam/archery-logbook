@@ -12,7 +12,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.NoSuchElementException;
 
 @Service
@@ -29,7 +28,7 @@ public class CompetitionService {
     public Page<Competition> listAllCompetitions(long archerId, int page, int size) throws NoSuchElementException {
         logger.debug("Getting competitions for archerId {}; page {} size {}", archerId, page, size);
         var archer = archerRepository.findById(archerId).orElseThrow(() -> new NoSuchElementException("Archer not found. archerId=" + archerId));
-        return competitionRepository.findByArcherId(archer.getId(), PageRequest.of(page, size, Sort.by("competitionDate").descending()));
+        return competitionRepository.findByArcherIdAndArchived(archer.getId(), false, PageRequest.of(page, size, Sort.by("competitionDate").descending()));
     }
 
     public Competition getCompetition(long id) throws NoSuchElementException {
@@ -42,7 +41,6 @@ public class CompetitionService {
         Archer archer = archerRepository.findById(archerId).orElseThrow(() -> new NoSuchElementException("Archer not found. archerId=" + archerId));
 
         competition.setArcherId(archer.getId());
-        //TODO: remove after fixing onetomany
         for (var round : competition.getRounds()) {
             round.setArcherId(archer.getId());
         }
