@@ -17,9 +17,11 @@ tags:
   - name: archers
     description: management of archers
   - name: bows
-    description: management of bows
+    description: management of archer's bows
   - name: rounds
-    description: management of rounds
+    description: management of archer's rounds
+  - name: competitions
+    description: management of archer's competitions
 
 paths:
   /clubs:
@@ -125,6 +127,31 @@ paths:
         - $ref: '#/components/parameters/nonce'
         - $ref: '#/components/parameters/timestamp'
         - $ref: '#/components/parameters/signature'
+        - name: clubId
+          in: query
+          description: Club ID
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: size
+          in: query
+          description: Number of element in a page
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+            maximum: 100
       responses:
         '200':
           description: successful operation
@@ -133,7 +160,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Archer'
+                  $ref: '#/components/schemas/ResultPage'
     post:
       tags:
         - archers
@@ -475,7 +502,7 @@ paths:
               schema:
                 type: object
                 items:
-                  $ref: '#/components/schemas/RoundPage'
+                  $ref: '#/components/schemas/ResultPage'
         '404':
           description: Archer not found
 
@@ -508,6 +535,8 @@ paths:
           description: successful operation
         '404':
           description: Archer not found
+        '400':
+          description: Invalid Round data
 
   /archers/{archerId}/rounds/{roundId}:
     get:
@@ -575,6 +604,149 @@ paths:
         '200':
           description: successful operation
 
+  /archers/{archerId}/competitions:
+    get:
+      tags:
+        - competitions
+      summary: Get all competitions for current archer
+      description: Returns a list of competitions for current archer
+      operationId: listAllCompetitions
+      parameters:
+        - $ref: '#/components/parameters/key'
+        - $ref: '#/components/parameters/nonce'
+        - $ref: '#/components/parameters/timestamp'
+        - $ref: '#/components/parameters/signature'
+        - name: archerId
+          in: path
+          description: Archer ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: size
+          in: query
+          description: Number of element in a page
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+            maximum: 100
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/ResultPage'
+        '404':
+          description: Archer not found
+
+  /archers/{archerId}/competitions/:
+    post:
+      tags:
+        - competitions
+      summary: Add a competition for current archer
+      description: Adds a competitions for current archer
+      operationId: addCompetition
+      parameters:
+        - $ref: '#/components/parameters/key'
+        - $ref: '#/components/parameters/nonce'
+        - $ref: '#/components/parameters/timestamp'
+        - $ref: '#/components/parameters/signature'
+        - name: archerId
+          in: path
+          description: Archer ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Competition'
+      responses:
+        '200':
+          description: successful operation
+        '404':
+          description: Archer not found
+
+  /archers/{archerId}/competitions/{roundId}:
+    get:
+      tags:
+        - competitions
+      summary: Get competition by ID
+      description: Returns a single competition for current archer
+      operationId: getCompetition
+      parameters:
+        - $ref: '#/components/parameters/key'
+        - $ref: '#/components/parameters/nonce'
+        - $ref: '#/components/parameters/timestamp'
+        - $ref: '#/components/parameters/signature'
+        - name: archerId
+          in: path
+          description: Archer ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: competitionId
+          in: path
+          description: Competition ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Competition'
+        '404':
+          description: Competition not found
+    delete:
+      tags:
+        - competitions
+      summary: Delete competition by ID
+      description: Delete competitions
+      operationId: deleteCompetition
+      parameters:
+        - $ref: '#/components/parameters/key'
+        - $ref: '#/components/parameters/nonce'
+        - $ref: '#/components/parameters/timestamp'
+        - $ref: '#/components/parameters/signature'
+        - name: archerId
+          in: path
+          description: Archer ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: competitionId
+          in: path
+          description: Competition ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
 
 components:
   parameters:
@@ -614,6 +786,8 @@ a concatenation of `path + key + nonce + timestamp`"
 
   schemas:
     Club:
+      required:
+        - name
       type: object
       properties:
         id:
@@ -670,9 +844,12 @@ a concatenation of `path + key + nonce + timestamp`"
           type: array
           items:
             $ref: '#/components/schemas/Round'
+        competitionList:
+          type: array
+          items:
+            $ref: '#/components/schemas/Competition'
     Bow:
       required:
-        - archerId
         - name
         - type
       type: object
@@ -691,6 +868,8 @@ a concatenation of `path + key + nonce + timestamp`"
           example: "RECURVE"
           enum:
             - RECURVE
+            - BAREBOW
+            - LONGBOW
             - COMPOUND
             - TRADITIONAL
         level:
@@ -721,7 +900,6 @@ a concatenation of `path + key + nonce + timestamp`"
             $ref: '#/components/schemas/DistanceSettings'
     DistanceSettings:
       required:
-        - bowId
         - distance
         - sight
         - isTested
@@ -740,11 +918,10 @@ a concatenation of `path + key + nonce + timestamp`"
           type: boolean
     Round:
       required:
-        - archerId
         - bowId
-        - roundDate
         - distance
         - targetFace
+        - ends
       type: object
       properties:
         id:
@@ -754,6 +931,9 @@ a concatenation of `path + key + nonce + timestamp`"
           type: integer
           example: 1
         bowId:
+          type: integer
+          example: 1
+        competitionId:
           type: integer
           example: 1
         roundDate:
@@ -784,6 +964,9 @@ a concatenation of `path + key + nonce + timestamp`"
           items:
             $ref: '#/components/schemas/End'
     End:
+      required:
+        - endNumber
+        - shots
       type: object
       properties:
         id:
@@ -801,6 +984,9 @@ a concatenation of `path + key + nonce + timestamp`"
           items:
             $ref: '#/components/schemas/Shot'
     Shot:
+      required:
+        - shotNumber
+        - shotScore
       type: object
       properties:
         id:
@@ -819,7 +1005,46 @@ a concatenation of `path + key + nonce + timestamp`"
           example: 8
           minimum: 0
           maximum: 10
-    RoundPage:
+    Competition:
+      required:
+        - competitionType
+        - rounds
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        archerId:
+          type: integer
+          example: 1
+        competitionType:
+          type: enum
+            - WA1440
+            - Canadian 1200
+            - Short Canadian 1200
+            - Canadian 900
+            - Short Canadian 900
+            - Burton
+            - Short Burton
+            - Silver Fern
+        competitionDate:
+          type: string
+          format: date
+          example: "10-06-2023"
+        competitionCountry:
+          type: string
+          example: "England"
+        competitionCity:
+          type: string
+          example: "Nottingham"
+        comment:
+          type: string
+          example: "National tournament"
+        rounds:
+          type: array
+          items:
+            $ref: '#/components/schemas/Round'
+    ResultPage:
       type: object
       properties:
         pageNumber:
@@ -834,10 +1059,13 @@ a concatenation of `path + key + nonce + timestamp`"
           type: boolean
         isLastPage:
           type: boolean
-        rounds:
+        items:
           type: array
           items:
-            $ref: '#/components/schemas/Round'
+            oneOf:
+              - $ref: '#/components/schemas/Archer'
+              - $ref: '#/components/schemas/Round'
+              - $ref: '#/components/schemas/Competition'
 
 
 

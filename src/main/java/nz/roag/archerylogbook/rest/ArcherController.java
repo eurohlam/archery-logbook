@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import static nz.roag.archerylogbook.rest.ErrorMessage.getErrorJson;
@@ -20,12 +20,22 @@ public class ArcherController {
     private ArcherService archerService;
 
     @GetMapping("")
-    public List<Archer> listAllArchers(@RequestParam(required = false) String clubId) {
+    public ResultPage<Archer> listAllArchers(@RequestParam(required = false) String clubId,
+                                       @RequestParam(name = "page", defaultValue = "0") int page,
+                                       @RequestParam(name = "size", defaultValue = "20") int size) {
+        ResultPage<Archer> resultPage = new ResultPage<>();
+        Page<Archer> archers;
         if (clubId != null) {
-            return archerService.listArchersByClub(Long.parseLong(clubId));
+             archers = archerService.listArchersByClub(Long.parseLong(clubId), page, size);
         } else {
-            return archerService.listAllArchers();
+             archers = archerService.listAllArchers(page, size);
         }
+        resultPage.setItems(archers.getContent());
+        resultPage.setPageNumber(page);
+        resultPage.setIsFirstPage(archers.isFirst());
+        resultPage.setIsLastPage(archers.isLast());
+        resultPage.setTotalPages(archers.getTotalPages());
+        return resultPage;
     }
 
 

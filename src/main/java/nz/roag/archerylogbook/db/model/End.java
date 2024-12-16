@@ -17,16 +17,12 @@ public class End {
     private long id;
 
     @Getter @Setter
-    @Column(name = "round_id", nullable = false)
-    private long roundId;
-
-    @Getter @Setter
     @Column(nullable = false)
     private short endNumber;
 
     @Getter @Setter
-    @OneToMany(targetEntity = Shot.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "end_id")
+    @OneToMany(targetEntity = Shot.class, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "end_id", nullable = false)
     private List<Shot> shots = new ArrayList<>();
 
     public int getShotsCount() {

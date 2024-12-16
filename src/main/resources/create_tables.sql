@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS `archery_shot`;
 DROP TABLE IF EXISTS `archery_end`;
 DROP TABLE IF EXISTS `archery_round`;
+DROP TABLE IF EXISTS `archery_competition`;
 DROP TABLE IF EXISTS `archery_distance_settings`;
 DROP TABLE IF EXISTS `archery_bow`;
 DROP TABLE IF EXISTS `archery_archer`;
@@ -97,6 +98,23 @@ INSERT INTO `archery_distance_settings` (`id`, `bow_id`, `distance`, `sight`, `i
 (2,	5,	30,	6,	'0');
 
 
+CREATE TABLE `archery_competition` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `archer_id` bigint(20) NOT NULL,
+  `competition_type` varchar(50) NOT NULL,
+  `competition_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `country` varchar(50) DEFAULT NULL,
+  `city` varchar(50) DEFAULT NULL,
+  `comment` longtext,
+  `archived` boolean DEFAULT false,
+  PRIMARY KEY (`id`),
+  INDEX `idx_archery_cmpt_type` (`archer_id`, `competition_type`, `archived`),
+  INDEX `idx_archery_cmpt_archer` (`archer_id`, `archived`),
+  CONSTRAINT `archery_cmpt_arc_ibfk_1` FOREIGN KEY (`archer_id`) REFERENCES `archery_archer` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+);
+
+INSERT INTO `archery_competition` (`id`, `archer_id`, `competition_type`, `comment`, `country`, `city`) VALUES
+(1,	1,	'SHORT_CANADIAN_1200', 'test', 'NZ', 'WGT');
 
 CREATE TABLE `archery_round` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -105,6 +123,7 @@ CREATE TABLE `archery_round` (
   `round_date` datetime NOT NULL DEFAULT current_timestamp(),
   `distance` varchar(50) NOT NULL,
   `target_face` varchar(50) NOT NULL,
+  `competition_id` bigint(20),
   `comment` longtext,
   `country` varchar(50) DEFAULT NULL,
   `city` varchar(50) DEFAULT NULL,
@@ -117,11 +136,12 @@ CREATE TABLE `archery_round` (
   INDEX `idx_archery_round_archerarc` (`archer_id`, `archived`),
   INDEX `idx_archery_round_bowarc` (`bow_id`, `archived`),
   CONSTRAINT `archery_round_arc_ibfk_1` FOREIGN KEY (`archer_id`) REFERENCES `archery_archer` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `archery_round_bow_ibfk_2` FOREIGN KEY (`bow_id`) REFERENCES `archery_bow` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `archery_round_bow_ibfk_2` FOREIGN KEY (`bow_id`) REFERENCES `archery_bow` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `archery_round_cmpt_ibfk_3` FOREIGN KEY (`competition_id`) REFERENCES `archery_competition` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
-INSERT INTO `archery_round` (`id`, `archer_id`, `bow_id`, `round_date`, `distance`, `target_face`, `comment`, `country`, `city`) VALUES
-(1,	1,	1,	'2023-02-16 22:29:32',	'50', '122cm', 'for fun', 'NZ', 'WGT');
+INSERT INTO `archery_round` (`id`, `archer_id`, `bow_id`, `round_date`, `distance`, `target_face`, `competition_id`, `comment`, `country`, `city`) VALUES
+(1,	1,	1,	'2023-02-16 22:29:32',	'50', 'TF_122cm', 1, 'for fun', 'NZ', 'WGT');
 
 
 CREATE TABLE `archery_end` (

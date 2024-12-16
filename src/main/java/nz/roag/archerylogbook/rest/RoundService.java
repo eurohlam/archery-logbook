@@ -15,7 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.NoSuchElementException;
 
 @Service
@@ -42,23 +41,17 @@ public class RoundService {
     }
 
     @Transactional
-    public void addRound(long archerId, Round round) throws NoSuchElementException {
+    public void addRound(long archerId, Round round) throws NoSuchElementException, IllegalArgumentException {
         logger.info("Adding a new round {} for archerId {}", round, archerId);
         Archer archer = archerRepository.findById(archerId).orElseThrow(() -> new NoSuchElementException("Archer not found. archerId=" + archerId));
-        round.setArcherId(archer.getId());
-        var ends = round.getEnds();
-        round.setEnds(Collections.emptyList());
-        Round persistedRound = roundRepository.save(round);
-        for (var end: ends) {
-            end.setRoundId(persistedRound.getId());
-            var shots = end.getShots();
-            end.setShots(Collections.emptyList());
-            var persistedEnd = endRepository.save(end);
-            for (var shot: shots) {
-                shot.setEndId(persistedEnd.getId());
-                shotRepository.save(shot);
-            }
+        if (round.getEndsCount() == 0) {
+            throw new IllegalArgumentException("Round has to have at least one end");
         }
+        if (round.getEnds().stream().anyMatch(e -> e.getShotsCount()==0)) {
+            throw new IllegalArgumentException("End has to have at least one shot");
+        }
+        round.setArcherId(archer.getId());
+        roundRepository.save(round);
     }
 
     public Round getRound(long id) throws NoSuchElementException {

@@ -60,8 +60,8 @@ public class Round {
     private Boolean archived = false;
 
     @Getter @Setter
-    @OneToMany(targetEntity = End.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "round_id")
+    @OneToMany(targetEntity = End.class, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "round_id", nullable = false)
     private List<End> ends = new ArrayList<>();
 
     public int getEndsCount() {

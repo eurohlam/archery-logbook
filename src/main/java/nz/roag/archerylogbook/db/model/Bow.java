@@ -58,8 +58,8 @@ public class Bow {
     private Boolean archived = false;
 
     @Getter @Setter
-    @OneToMany(targetEntity = DistanceSettings.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "bow_id")
+    @OneToMany(targetEntity = DistanceSettings.class, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "bow_id", nullable = false)
     private SortedSet<DistanceSettings> distanceSettingsList = new TreeSet<>();
 
     @Override

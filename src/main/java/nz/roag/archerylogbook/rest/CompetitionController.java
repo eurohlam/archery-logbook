@@ -1,9 +1,10 @@
 package nz.roag.archerylogbook.rest;
 
-import nz.roag.archerylogbook.db.model.Round;
+import nz.roag.archerylogbook.db.model.Competition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,16 +15,16 @@ import java.util.NoSuchElementException;
 import static nz.roag.archerylogbook.rest.ErrorMessage.getErrorJson;
 
 @RestController
-@RequestMapping("/archers/{archerId}/rounds")
-public class RoundController {
+@RequestMapping("/archers/{archerId}/competitions")
+public class CompetitionController {
 
-    private final Logger logger = LoggerFactory.getLogger(RoundController.class);
+    private final Logger logger = LoggerFactory.getLogger(CompetitionController.class);
 
     @Autowired
-    private RoundService roundService;
+    private CompetitionService competitionService;
 
     @GetMapping("")
-    public ResponseEntity<?> listAllRounds(@PathVariable long archerId,
+    public ResponseEntity<?> listAllCompetitions(@PathVariable long archerId,
                                            @RequestParam(name = "page", defaultValue = "0") int page,
                                            @RequestParam(name = "size", defaultValue = "20") int size) {
         try {
@@ -32,56 +33,56 @@ public class RoundController {
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(getErrorJson("BAD_REQUEST",
                                 "The value of page parameter can not be less then 0",
-                                "/archers/" + archerId + "/rounds"));
+                                "/archers/" + archerId + "/competitions"));
             }
             if (size < 1 || size > 100) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(getErrorJson("BAD_REQUEST",
                                 "The value of size parameter should be between 1 and 100",
-                                "/archers/" + archerId + "/rounds"));
+                                "/archers/" + archerId + "/competitions"));
             }
-            org.springframework.data.domain.Page<Round> rounds = roundService.listAllRounds(archerId, page, size);
+            Page<Competition> competitions = competitionService.listAllCompetitions(archerId, page, size);
 
-            ResultPage<Round> roundResultPage = new ResultPage<>();
-            roundResultPage.setItems(rounds.getContent());
-            roundResultPage.setTotalPages(rounds.getTotalPages());
-            roundResultPage.setIsFirstPage(rounds.isFirst());
-            roundResultPage.setIsLastPage(rounds.isLast());
-            roundResultPage.setPageNumber(page);
+            ResultPage<Competition> competitionResultPage = new ResultPage<>();
+            competitionResultPage.setItems(competitions.getContent());
+            competitionResultPage.setTotalPages(competitions.getTotalPages());
+            competitionResultPage.setIsFirstPage(competitions.isFirst());
+            competitionResultPage.setIsLastPage(competitions.isLast());
+            competitionResultPage.setPageNumber(page);
 
             return ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(roundResultPage);
+                    .body(competitionResultPage);
         } catch (NoSuchElementException e) {
             logger.error(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(getErrorJson("NOT_FOUND",
                             e.getMessage(),
-                            "/archers/" + archerId + "/rounds"));
+                            "/archers/" + archerId + "/competitions"));
         }
     }
 
-    @GetMapping("/{roundId}")
-    public ResponseEntity<?> getRound(@PathVariable long archerId, @PathVariable long roundId) {
+    @GetMapping("/{competitionId}")
+    public ResponseEntity<?> getCompetition(@PathVariable long archerId, @PathVariable long competitionId) {
         try {
-            Round round = roundService.getRound(roundId);
-            return new ResponseEntity<>(round, HttpStatus.OK);
+            Competition competition = competitionService.getCompetition(competitionId);
+            return new ResponseEntity<>(competition, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             logger.error(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(getErrorJson("NOT_FOUND",
                             e.getMessage(),
-                            "/archers/" + archerId + "/rounds/" + roundId));
+                            "/archers/" + archerId + "/competitions/" + competitionId));
         }
     }
 
     @PostMapping("/")
-    public ResponseEntity<?> addRound(@PathVariable long archerId, @RequestBody Round round) {
+    public ResponseEntity<?> addCompetition(@PathVariable long archerId, @RequestBody Competition competition) {
         try {
-            roundService.addRound(archerId, round);
+            competitionService.addCompetition(archerId, competition);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
             logger.error(e.getMessage(), e);
@@ -89,19 +90,19 @@ public class RoundController {
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(getErrorJson("NOT_FOUND",
                             e.getMessage(),
-                            "/archers/" + archerId + "/rounds/"));
+                            "/archers/" + archerId + "/competitions/"));
         } catch (IllegalArgumentException e) {
             logger.error(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(getErrorJson("BAD_REQUEST",
                             e.getMessage(),
-                            "/archers/" + archerId + "/rounds/"));
+                            "/archers/" + archerId + "/competitions/"));
         }
     }
 
-    @DeleteMapping("/{roundId}")
-    public void deleteRound(@PathVariable long roundId) {
-        roundService.deleteRound(roundId);
+    @DeleteMapping("/{competitionId}")
+    public void deleteCompetition(@PathVariable long competitionId) {
+        competitionService.deleteCompetition(competitionId);
     }
 }
