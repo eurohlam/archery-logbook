@@ -127,6 +127,31 @@ paths:
         - $ref: '#/components/parameters/nonce'
         - $ref: '#/components/parameters/timestamp'
         - $ref: '#/components/parameters/signature'
+        - name: clubId
+          in: query
+          description: Club ID
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: size
+          in: query
+          description: Number of element in a page
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+            maximum: 100
       responses:
         '200':
           description: successful operation
@@ -135,7 +160,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Archer'
+                  $ref: '#/components/schemas/ResultPage'
     post:
       tags:
         - archers
@@ -1038,6 +1063,7 @@ a concatenation of `path + key + nonce + timestamp`"
           type: array
           items:
             oneOf:
+              - $ref: '#/components/schemas/Archer'
               - $ref: '#/components/schemas/Round'
               - $ref: '#/components/schemas/Competition'
 
