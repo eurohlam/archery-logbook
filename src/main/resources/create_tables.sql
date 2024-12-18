@@ -131,7 +131,6 @@ CREATE TABLE `archery_round` (
   PRIMARY KEY (`id`),
   KEY `archery_round_ibfk_1` (`archer_id`),
   KEY `archery_round_ibfk_2` (`bow_id`),
-  UNIQUE KEY `archery_round_date_unq` (round_date),
   INDEX `idx_archery_round_idarc` (`id`, `archived`),
   INDEX `idx_archery_round_archerarc` (`archer_id`, `archived`),
   INDEX `idx_archery_round_bowarc` (`bow_id`, `archived`),
