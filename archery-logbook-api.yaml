@@ -1110,6 +1110,9 @@ a concatenation of `path + key + nonce + timestamp`"
           type: string
           format: date
           example: "10-06-2023"
+        ageClass:
+          type: string
+          example: 50+
         competitionCountry:
           type: string
           example: "England"
@@ -1124,6 +1127,13 @@ a concatenation of `path + key + nonce + timestamp`"
           minItems: 1
           items:
             $ref: '#/components/schemas/Round'
+        roundsSummary:
+          type: string
+          description: short summary based on rounds statistics - distances and scores
+          readOnly: true
+          example: |-
+            Round #1: distance: 70 m | sum 45
+            Round #2: distance: 50 m | sum 50
         roundsCount:
           type: integer
           minimum: 0

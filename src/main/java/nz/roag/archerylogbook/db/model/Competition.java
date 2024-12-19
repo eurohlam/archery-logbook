@@ -16,6 +16,7 @@ public class Competition {
 
     public enum CompetitionType {
         WA1440("WA1440"),
+        WA720("WA720"),
         CANADIAN_1200("Canadian 1200"),
         SHORT_CANADIAN_1200("Short Canadian 1200"),
         CANADIAN_900("Canadian 900"),
@@ -24,16 +25,16 @@ public class Competition {
         SHORT_BURTON("Short Burton"),
         SILVER_FERN("Silver Fern");
 
-        private final String competitionType;
+        private final String type;
 
         CompetitionType(final String competitionType) {
-            this.competitionType = competitionType;
+            this.type = competitionType;
         }
 
         @Override
         @JsonValue
         public String toString() {
-            return this.competitionType;
+            return this.type;
         }
     }
 
@@ -54,6 +55,10 @@ public class Competition {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private CompetitionType competitionType;
+
+    @Getter @Setter
+    @Column
+    private String ageClass;
 
     @Getter @Setter
     @Column
@@ -91,6 +96,15 @@ public class Competition {
     public String getAvg() {
         var sum = rounds.stream().reduce((double)0, (avgSum, round) -> avgSum + Double.parseDouble(round.getAvg()), Double::sum);
         return String.format("%.2f", sum / getRoundsCount());
+    }
+
+    public String getRoundsSummary() {
+        var s = new StringBuilder();
+        for (int i =0 ; i < rounds.size(); i++) {
+            var round = rounds.get(i);
+            s.append("Round #" + (i + 1) + ": distance: " + round.getDistance() + "m; sum: " + round.getSum() + "\n");
+        }
+        return s.toString();
     }
 
     @Override

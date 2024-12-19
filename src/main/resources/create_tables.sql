@@ -101,6 +101,7 @@ CREATE TABLE `archery_competition` (
   `archer_id` bigint(20) NOT NULL,
   `competition_type` varchar(50) NOT NULL,
   `competition_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `age_class` varchar(50) DEFAULT NULL,
   `country` varchar(50) DEFAULT NULL,
   `city` varchar(50) DEFAULT NULL,
   `comment` longtext,
