@@ -1,5 +1,6 @@
 package nz.roag.archerylogbook.db.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -67,10 +68,33 @@ public class Competition {
     private String city;
 
     @Getter @Setter
+    @JsonIgnore
     private Boolean archived = false;
 
     @Getter @Setter
     @OneToMany(targetEntity = Round.class, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "competition_id")
     private List<Round> rounds = new ArrayList<>();
+
+    public int getRoundsCount() {
+        return rounds.size();
+    }
+
+    public int getShotsCount() {
+        return rounds.stream().reduce(0, (count, round) -> count + round.getShotsCount(), Integer::sum);
+    }
+
+    public int getSum() {
+        return rounds.stream().reduce(0, (sum, round) -> sum + round.getSum(), Integer::sum);
+    }
+
+    public String getAvg() {
+        var sum = rounds.stream().reduce((double)0, (avgSum, round) -> avgSum + Double.parseDouble(round.getAvg()), Double::sum);
+        return String.format("%.2f", sum / getRoundsCount());
+    }
+
+    @Override
+    public String toString() {
+        return String.format("{ id: %d, competitionType: %s, competitionDate: %s, shots: %d, sum: %d, avg: %s }", getId(), getCompetitionType(), getCompetitionDate(), getShotsCount(), getSum(), getAvg());
+    }
 }

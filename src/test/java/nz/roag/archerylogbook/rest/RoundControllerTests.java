@@ -44,13 +44,14 @@ class RoundControllerTests extends AbstractControllerTest {
     private ShotRepository shotRepository;
 
     private Archer archer;
+    private Bow bow;
     private Round round;
     private End end;
     private final String json = """
             {
                 "id":0,
                 "archerId":1,
-                "bowId": null,
+                "bowId": 0,
                 "roundDate":"2023-01-15T11:15:00.000+00:00",
                 "distance":"30",
                 "targetFace":"122cm",
@@ -88,6 +89,13 @@ class RoundControllerTests extends AbstractControllerTest {
         archer.setLastName("Hood");
         archer.setEmail("robin@hood.arch");
         archer.setClubId(11L);
+
+        bow = new Bow();
+        bow.setType(Bow.Type.RECURVE);
+        bow.setPoundage("22");
+        bow.setLevel(Bow.Level.INTERMEDIATE);
+        bow.setRiserModel("Riser");
+        archer.setBowList(List.of(bow));
 
         round = new Round();
         round.setArcherId(archer.getId());
@@ -223,6 +231,30 @@ class RoundControllerTests extends AbstractControllerTest {
 
     @Test
     void addRoundFailure() throws Exception {
+        String invalidBowIdRound = """
+            {
+                "bowId": 5,
+                "distance":"30",
+                "targetFace":"122cm",
+                "ends":[
+                    {
+                        "endNumber":1,
+                        "shots":[
+                            {
+                                "shotNumber":1,
+                                "shotScore":10
+                            }
+                        ]
+                    }
+                ]
+            }
+            """;
+        mvc.perform(post("/archers/1/rounds/")
+                        .headers(getHttpHeaders("/archers/1/rounds/"))
+                        .contentType("application/json")
+                        .content(invalidBowIdRound))
+                .andExpect(status().isBadRequest());
+
         String noEndsRound = """
             {
                 "distance":"30",

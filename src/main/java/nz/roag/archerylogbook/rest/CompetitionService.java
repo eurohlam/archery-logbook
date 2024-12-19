@@ -39,7 +39,12 @@ public class CompetitionService {
     public void addCompetition(long archerId, Competition competition) throws NoSuchElementException, IllegalArgumentException {
         logger.info("Adding a new competition {} for archerId {}", competition, archerId);
         Archer archer = archerRepository.findById(archerId).orElseThrow(() -> new NoSuchElementException("Archer not found. archerId=" + archerId));
-
+        if (competition.getRoundsCount() == 0) {
+            throw new IllegalArgumentException("Competition has to have at least one round");
+        }
+        if (competition.getRounds().stream().anyMatch(round -> round.getShotsCount()==0)) {
+            throw new IllegalArgumentException("Round has to have at least one shot");
+        }
         competition.setArcherId(archer.getId());
         for (var round : competition.getRounds()) {
             round.setArcherId(archer.getId());

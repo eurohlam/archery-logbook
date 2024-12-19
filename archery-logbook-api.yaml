@@ -3,7 +3,7 @@ info:
   title: Archer's Log Book
   description: |-
     This is a springboot based REST API that helps to build a back-end for [Archer's Log Book](https://roundkick.nz) project
-    Archer's Log Book helps archers to manage their rounds, bows and overall progress.
+    Archer's Log Book helps archers to manage their scores, bows and overall progress.
     
   license:
     name: Apache 3.0
@@ -682,7 +682,7 @@ paths:
         '404':
           description: Archer not found
 
-  /archers/{archerId}/competitions/{roundId}:
+  /archers/{archerId}/competitions/{competitionId}:
     get:
       tags:
         - competitions
@@ -792,7 +792,9 @@ a concatenation of `path + key + nonce + timestamp`"
       properties:
         id:
           type: integer
+          format: int64
           example: 1
+          readOnly: true
         name:
           type: string
           example: "Archery club"
@@ -813,7 +815,9 @@ a concatenation of `path + key + nonce + timestamp`"
       properties:
         id:
           type: integer
+          format: int64
           example: 1
+          readOnly: true
         firstName:
           type: string
           example: "Robin"
@@ -826,16 +830,25 @@ a concatenation of `path + key + nonce + timestamp`"
           example: "robin@hood.uk"
         club_id:
           type: number
+          format: int64
+          readOnly: true
           example: 1
+        club:
+          type: object
+          $ref: '#/components/schemas/Club'
+          readOnly: true
         club_name:
           type: string
           example: "Archery Club"
+          writeOnly: true
         country:
           type: string
           example: "England"
+          writeOnly: true
         city:
           type: string
           example: "Nottingham"
+          writeOnly: true
         bowList:
           type: array
           items:
@@ -856,10 +869,15 @@ a concatenation of `path + key + nonce + timestamp`"
       properties:
         id:
           type: integer
+          format: int64
           example: 1
+          readOnly: true
         archerId:
           type: integer
+          format: int64
           example: 1
+          readOnly: true
+          description: for POST operation it is a required path parameter
         name:
           type: string
           example: "My bow"
@@ -905,9 +923,11 @@ a concatenation of `path + key + nonce + timestamp`"
         - isTested
       type: object
       properties:
-        bowId:
+        id:
           type: integer
+          format: int64
           example: 1
+          readOnly: true
         distance:
           type: number
           example: 20
@@ -926,15 +946,26 @@ a concatenation of `path + key + nonce + timestamp`"
       properties:
         id:
           type: integer
+          format: int64
           example: 1
+          readOnly: true
         archerId:
           type: integer
+          format: int64
           example: 1
+          readOnly: true
+          description: for POST operation it is a required path parameter
         bowId:
           type: integer
+          format: int64
           example: 1
+        bow:
+          type: object
+          $ref: '#/components/schemas/Bow'
+          readOnly: true
         competitionId:
           type: integer
+          format: int64
           example: 1
         roundDate:
           type: string
@@ -944,8 +975,9 @@ a concatenation of `path + key + nonce + timestamp`"
           type: string
           example: "30"
         targetFace:
+          type: string
           example: "122cm"
-          type: enum
+          enum:
             - 122cm
             - 80cm
             - 60cm
@@ -961,8 +993,30 @@ a concatenation of `path + key + nonce + timestamp`"
           example: "Nottingham"
         ends:
           type: array
+          minItems: 1
           items:
             $ref: '#/components/schemas/End'
+        endsCount:
+          type: integer
+          minimum: 0
+          readOnly: true
+          example: 3
+        shotsCount:
+          type: integer
+          minimum: 0
+          readOnly: true
+          example: 36
+        sum:
+          type: integer
+          minimum: 0
+          readOnly: true
+          example: 400
+        avg:
+          type: number
+          format: float
+          minimum: 0
+          readOnly: true
+          example: 7.45
     End:
       required:
         - endNumber
@@ -971,18 +1025,37 @@ a concatenation of `path + key + nonce + timestamp`"
       properties:
         id:
           type: integer
+          format: int64
           example: 1
-        roundId:
-          type: integer
-          example: 1
+          readOnly: true
         endNumber:
           type: integer
           example: 1
           minimum: 1
         shots:
           type: array
+          minItems: 1
+          maxItems: 6
           items:
             $ref: '#/components/schemas/Shot'
+        shotsCount:
+          type: integer
+          minimum: 0
+          maximum: 6
+          readOnly: true
+          example: 6
+        sum:
+          type: integer
+          minimum: 0
+          maximum: 60
+          readOnly: true
+          example: 54
+        avg:
+          type: number
+          format: float
+          minimum: 0
+          readOnly: true
+          example: 7.45
     Shot:
       required:
         - shotNumber
@@ -991,10 +1064,9 @@ a concatenation of `path + key + nonce + timestamp`"
       properties:
         id:
           type: integer
+          format: int64
           example: 1
-        endId:
-          type: integer
-          example: 1
+          readOnly: true
         shotNumber:
           type: integer
           example: 3
@@ -1013,12 +1085,19 @@ a concatenation of `path + key + nonce + timestamp`"
       properties:
         id:
           type: integer
+          format: int64
           example: 1
+          readOnly: true
         archerId:
           type: integer
+          format: int64
           example: 1
+          readOnly: true
+          description: for POST operation it is a required path parameter
         competitionType:
-          type: enum
+          type: string
+          example: "WA1440"
+          enum:
             - WA1440
             - Canadian 1200
             - Short Canadian 1200
@@ -1042,10 +1121,33 @@ a concatenation of `path + key + nonce + timestamp`"
           example: "National tournament"
         rounds:
           type: array
+          minItems: 1
           items:
             $ref: '#/components/schemas/Round'
+        roundsCount:
+          type: integer
+          minimum: 0
+          readOnly: true
+          example: 3
+        shotsCount:
+          type: integer
+          minimum: 0
+          readOnly: true
+          example: 60
+        sum:
+          type: integer
+          minimum: 0
+          readOnly: true
+          example: 700
+        avg:
+          type: number
+          format: float
+          minimum: 0
+          readOnly: true
+          example: 7.45
     ResultPage:
       type: object
+      readOnly: true
       properties:
         pageNumber:
           type: integer

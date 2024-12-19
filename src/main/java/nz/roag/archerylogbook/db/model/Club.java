@@ -1,5 +1,6 @@
 package nz.roag.archerylogbook.db.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,12 +31,13 @@ public class Club {
     private String url;
 
     @Getter @Setter
+    @JsonIgnore
     private Boolean archived = false;
 
-    @Getter @Setter
+/*    @Getter @Setter
     @OneToMany(targetEntity = Archer.class, cascade = CascadeType.DETACH)
     @JoinColumn(name = "club_id")
-    private Set<Archer> archers = new HashSet<>();
+    private Set<Archer> archers = new HashSet<>();*/
 
     @Override
     public String toString() {
