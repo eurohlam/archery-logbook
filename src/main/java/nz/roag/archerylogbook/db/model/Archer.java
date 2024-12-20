@@ -1,5 +1,6 @@
 package nz.roag.archerylogbook.db.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,9 +30,16 @@ public class Archer {
 
     @Getter @Setter
     @Column(name = "club_id")
+    @JsonIgnore
     private Long clubId;
 
+    @Getter
+    @OneToOne(targetEntity = Club.class)
+    @JoinColumn(name = "club_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private Club club;
+
     @Getter @Setter
+    @JsonIgnore
     private Boolean archived = false;
 
     @Getter @Setter

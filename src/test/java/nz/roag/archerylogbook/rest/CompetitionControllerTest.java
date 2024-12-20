@@ -58,7 +58,7 @@ public class CompetitionControllerTest extends AbstractControllerTest {
                {
                 "id":0,
                 "archerId":1,
-                "bowId": null,
+                "bowId": 0,
                 "roundDate":"2023-01-15T11:15:00.000+00:00",
                 "distance":"30",
                 "targetFace":"122cm",

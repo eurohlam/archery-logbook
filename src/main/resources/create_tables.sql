@@ -71,6 +71,7 @@ CREATE TABLE `archery_bow` (
   PRIMARY KEY (`id`),
   KEY `archer_id` (`archer_id`),
   INDEX `idx_archery_bow_idarc` (`id`, `archived`),
+  INDEX `idx_archery_bow_idarcher` (`id`, `archer_id`),
   INDEX `idx_archery_bow_archerarc` (`archer_id`, `archived`),
   CONSTRAINT `archery_bow_ibfk_1` FOREIGN KEY (`archer_id`) REFERENCES `archery_archer` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 );
@@ -78,9 +79,6 @@ CREATE TABLE `archery_bow` (
 INSERT INTO `archery_bow` (`id`, `archer_id`, `name`, `type`, `level`, `poundage`, `compound_model`, `riser_model`, `limbs_model`) VALUES
 (1,	1,	'My bow',	'RECURVE',	'INTERMEDIATE',	'28-32',	NULL,	'Black',	'hren'),
 (5,	1,	'My best bow',	'BAREBOW',	'INTERMEDIATE',	'28-32',	NULL,	'Black',	NULL);
-
-
-
 
 CREATE TABLE `archery_distance_settings` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -103,6 +101,7 @@ CREATE TABLE `archery_competition` (
   `archer_id` bigint(20) NOT NULL,
   `competition_type` varchar(50) NOT NULL,
   `competition_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `age_class` varchar(50) DEFAULT NULL,
   `country` varchar(50) DEFAULT NULL,
   `city` varchar(50) DEFAULT NULL,
   `comment` longtext,
@@ -135,7 +134,7 @@ CREATE TABLE `archery_round` (
   INDEX `idx_archery_round_archerarc` (`archer_id`, `archived`),
   INDEX `idx_archery_round_bowarc` (`bow_id`, `archived`),
   CONSTRAINT `archery_round_arc_ibfk_1` FOREIGN KEY (`archer_id`) REFERENCES `archery_archer` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `archery_round_bow_ibfk_2` FOREIGN KEY (`bow_id`) REFERENCES `archery_bow` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `archery_round_bow_ibfk_2` FOREIGN KEY (`bow_id`, `archer_id`) REFERENCES `archery_bow` (`id`,`archer_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `archery_round_cmpt_ibfk_3` FOREIGN KEY (`competition_id`) REFERENCES `archery_competition` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 

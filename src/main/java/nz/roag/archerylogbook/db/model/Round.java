@@ -1,5 +1,6 @@
 package nz.roag.archerylogbook.db.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NonNull;
@@ -24,7 +25,7 @@ public class Round {
 
     @Getter @Setter
     @Column(name = "bow_id", nullable = false)
-    private Long bowId;
+    private long bowId;
 
     @Getter
     @OneToOne(targetEntity = Bow.class)
@@ -57,6 +58,7 @@ public class Round {
     private String city;
 
     @Getter @Setter
+    @JsonIgnore
     private Boolean archived = false;
 
     @Getter @Setter

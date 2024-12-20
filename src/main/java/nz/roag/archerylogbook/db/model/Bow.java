@@ -1,5 +1,6 @@
 package nz.roag.archerylogbook.db.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -55,6 +56,7 @@ public class Bow {
     private String longbowModel;
 
     @Getter @Setter
+    @JsonIgnore
     private Boolean archived = false;
 
     @Getter @Setter

@@ -44,6 +44,9 @@ public class RoundService {
     public void addRound(long archerId, Round round) throws NoSuchElementException, IllegalArgumentException {
         logger.info("Adding a new round {} for archerId {}", round, archerId);
         Archer archer = archerRepository.findById(archerId).orElseThrow(() -> new NoSuchElementException("Archer not found. archerId=" + archerId));
+        if (archer.getBowList().stream().noneMatch(bow -> bow.getId() == round.getBowId())) {
+            throw new IllegalArgumentException("Bow with bowId=" + round.getBowId() + " does not belong to archer with archerId=" + archerId);
+        }
         if (round.getEndsCount() == 0) {
             throw new IllegalArgumentException("Round has to have at least one end");
         }

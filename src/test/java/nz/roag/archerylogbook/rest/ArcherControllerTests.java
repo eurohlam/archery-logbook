@@ -38,7 +38,7 @@ class ArcherControllerTests extends AbstractControllerTest {
                     "id":1,"firstName":"Robin",
                     "lastName":"Hood",
                     "email":"robin@hood.arch",
-                    "clubId":11,
+                    "club":null,
                     "bowList":[],
                     "roundList":[],
                     "clubName":"Thieves",

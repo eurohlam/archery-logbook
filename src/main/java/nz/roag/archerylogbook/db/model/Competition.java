@@ -1,5 +1,6 @@
 package nz.roag.archerylogbook.db.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -15,6 +16,7 @@ public class Competition {
 
     public enum CompetitionType {
         WA1440("WA1440"),
+        WA720("WA720"),
         CANADIAN_1200("Canadian 1200"),
         SHORT_CANADIAN_1200("Short Canadian 1200"),
         CANADIAN_900("Canadian 900"),
@@ -23,16 +25,16 @@ public class Competition {
         SHORT_BURTON("Short Burton"),
         SILVER_FERN("Silver Fern");
 
-        private final String competitionType;
+        private final String type;
 
         CompetitionType(final String competitionType) {
-            this.competitionType = competitionType;
+            this.type = competitionType;
         }
 
         @Override
         @JsonValue
         public String toString() {
-            return this.competitionType;
+            return this.type;
         }
     }
 
@@ -56,6 +58,10 @@ public class Competition {
 
     @Getter @Setter
     @Column
+    private String ageClass;
+
+    @Getter @Setter
+    @Column
     private String comment;
 
     @Getter @Setter
@@ -67,10 +73,42 @@ public class Competition {
     private String city;
 
     @Getter @Setter
+    @JsonIgnore
     private Boolean archived = false;
 
     @Getter @Setter
     @OneToMany(targetEntity = Round.class, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "competition_id")
     private List<Round> rounds = new ArrayList<>();
+
+    public int getRoundsCount() {
+        return rounds.size();
+    }
+
+    public int getShotsCount() {
+        return rounds.stream().reduce(0, (count, round) -> count + round.getShotsCount(), Integer::sum);
+    }
+
+    public int getSum() {
+        return rounds.stream().reduce(0, (sum, round) -> sum + round.getSum(), Integer::sum);
+    }
+
+    public String getAvg() {
+        var sum = rounds.stream().reduce((double)0, (avgSum, round) -> avgSum + Double.parseDouble(round.getAvg()), Double::sum);
+        return String.format("%.2f", sum / getRoundsCount());
+    }
+
+    public String[] getRoundsSummary() {
+        var summary = new String[rounds.size()];
+        for (int i =0 ; i < rounds.size(); i++) {
+            var round = rounds.get(i);
+            summary[i] = ("Round #" + (i + 1) + ": distance: " + round.getDistance() + "m; sum: " + round.getSum());
+        }
+        return summary;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("{ id: %d, competitionType: %s, competitionDate: %s, shots: %d, sum: %d, avg: %s }", getId(), getCompetitionType(), getCompetitionDate(), getShotsCount(), getSum(), getAvg());
+    }
 }
