@@ -98,13 +98,13 @@ public class Competition {
         return String.format("%.2f", sum / getRoundsCount());
     }
 
-    public String getRoundsSummary() {
-        var s = new StringBuilder();
+    public String[] getRoundsSummary() {
+        var summary = new String[rounds.size()];
         for (int i =0 ; i < rounds.size(); i++) {
             var round = rounds.get(i);
-            s.append("Round #" + (i + 1) + ": distance: " + round.getDistance() + "m; sum: " + round.getSum() + "\n");
+            summary[i] = ("Round #" + (i + 1) + ": distance: " + round.getDistance() + "m; sum: " + round.getSum());
         }
-        return s.toString();
+        return summary;
     }
 
     @Override
