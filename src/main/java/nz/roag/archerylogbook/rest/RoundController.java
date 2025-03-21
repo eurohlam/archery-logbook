@@ -78,7 +78,7 @@ public class RoundController {
         }
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<?> addRound(@PathVariable long archerId, @RequestBody Round round) {
         try {
             roundService.addRound(archerId, round);
@@ -89,14 +89,14 @@ public class RoundController {
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(getErrorJson("NOT_FOUND",
                             e.getMessage(),
-                            "/archers/" + archerId + "/rounds/"));
+                            "/archers/" + archerId + "/rounds"));
         } catch (IllegalArgumentException e) {
             logger.error(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(getErrorJson("BAD_REQUEST",
                             e.getMessage(),
-                            "/archers/" + archerId + "/rounds/"));
+                            "/archers/" + archerId + "/rounds"));
         }
     }
 

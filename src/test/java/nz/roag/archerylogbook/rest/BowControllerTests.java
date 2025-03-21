@@ -103,8 +103,8 @@ class BowControllerTests extends AbstractControllerTest {
 
     @Test
     void addBow() throws Exception{
-        mvc.perform(post("/archers/1/bows/")
-                        .headers(getHttpHeaders("/archers/1/bows/"))
+        mvc.perform(post("/archers/1/bows")
+                        .headers(getHttpHeaders("/archers/1/bows"))
                         .contentType("application/json")
                         .content(bowJson))
                 .andExpect(status().isOk());
@@ -126,8 +126,8 @@ class BowControllerTests extends AbstractControllerTest {
                 "isTested": true
             }
             """;
-        mvc.perform(put("/archers/1/bows/1/")
-                        .headers(getHttpHeaders("/archers/1/bows/1/"))
+        mvc.perform(patch("/archers/1/bows/1")
+                        .headers(getHttpHeaders("/archers/1/bows/1"))
                         .contentType("application/json")
                         .content(distanceSettingsJson))
                 .andExpect(status().isOk());
@@ -135,8 +135,8 @@ class BowControllerTests extends AbstractControllerTest {
 
     @Test
     void updateBow() throws Exception{
-        mvc.perform(post("/archers/1/bows/1/")
-                        .headers(getHttpHeaders("/archers/1/bows/1/"))
+        mvc.perform(put("/archers/1/bows/1")
+                        .headers(getHttpHeaders("/archers/1/bows/1"))
                         .contentType("application/json")
                         .content(bowJson))
                 .andExpect(status().isOk());

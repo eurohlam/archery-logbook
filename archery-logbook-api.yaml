@@ -230,9 +230,7 @@ paths:
       responses:
         '200':
           description: successful operation
-
-  /archers/{id}/:
-    post:
+    put:
       tags:
         - archers
       summary: Update an archer
@@ -291,8 +289,6 @@ paths:
                   $ref: '#/components/schemas/Bow'
         '404':
           description: Archer not found
-
-  /archers/{archerId}/bows/:
     post:
       tags:
         - bows
@@ -385,9 +381,7 @@ paths:
       responses:
         '200':
           description: successful operation
-
-  /archers/{archerId}/bows/{bowId}/:
-    post:
+    put:
       tags:
         - bows
       summary: Update existing bow for archer
@@ -422,7 +416,7 @@ paths:
           description: successful operation
         '404':
           description: Bow not found
-    put:
+    patch:
       tags:
         - bows
       summary: Add or update DistanceSettings for existing bow
@@ -505,8 +499,6 @@ paths:
                   $ref: '#/components/schemas/ResultPage'
         '404':
           description: Archer not found
-
-  /archers/{archerId}/rounds/:
     post:
       tags:
         - rounds
@@ -651,8 +643,6 @@ paths:
                   $ref: '#/components/schemas/ResultPage'
         '404':
           description: Archer not found
-
-  /archers/{archerId}/competitions/:
     post:
       tags:
         - competitions
@@ -1134,8 +1124,8 @@ a concatenation of `path + key + nonce + timestamp`"
           description: short summary based on rounds statistics - distances and scores
           readOnly: true
           example: |-
-            Round #1: distance: 70m; sum 45
-            Round #2: distance: 50m; sum 50
+            ["Round #1: distance: 70m; sum 45",
+             "Round #2: distance: 50m; sum 50"]
         roundsCount:
           type: integer
           minimum: 0
