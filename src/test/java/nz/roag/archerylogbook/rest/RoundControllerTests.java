@@ -222,8 +222,8 @@ class RoundControllerTests extends AbstractControllerTest {
             }
             """;
 
-        mvc.perform(post("/archers/1/rounds/")
-                        .headers(getHttpHeaders("/archers/1/rounds/"))
+        mvc.perform(post("/archers/1/rounds")
+                        .headers(getHttpHeaders("/archers/1/rounds"))
                         .contentType("application/json")
                         .content(roundJson))
                 .andExpect(status().isOk());
@@ -249,8 +249,8 @@ class RoundControllerTests extends AbstractControllerTest {
                 ]
             }
             """;
-        mvc.perform(post("/archers/1/rounds/")
-                        .headers(getHttpHeaders("/archers/1/rounds/"))
+        mvc.perform(post("/archers/1/rounds")
+                        .headers(getHttpHeaders("/archers/1/rounds"))
                         .contentType("application/json")
                         .content(invalidBowIdRound))
                 .andExpect(status().isBadRequest());
@@ -261,8 +261,8 @@ class RoundControllerTests extends AbstractControllerTest {
                 "targetFace":"122cm"
             }
             """;
-        mvc.perform(post("/archers/1/rounds/")
-                        .headers(getHttpHeaders("/archers/1/rounds/"))
+        mvc.perform(post("/archers/1/rounds")
+                        .headers(getHttpHeaders("/archers/1/rounds"))
                         .contentType("application/json")
                         .content(noEndsRound))
                 .andExpect(status().isBadRequest());
@@ -296,8 +296,8 @@ class RoundControllerTests extends AbstractControllerTest {
                 ]
             }
             """;
-        mvc.perform(post("/archers/1/rounds/")
-                        .headers(getHttpHeaders("/archers/1/rounds/"))
+        mvc.perform(post("/archers/1/rounds")
+                        .headers(getHttpHeaders("/archers/1/rounds"))
                         .contentType("application/json")
                         .content(emptyEndRound))
                 .andExpect(status().isBadRequest());

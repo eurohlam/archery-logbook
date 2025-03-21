@@ -54,7 +54,7 @@ public class BowController {
         }
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<?> addBow(@PathVariable long archerId, @RequestBody Bow bow) {
         try {
             bowService.addBow(archerId, bow);
@@ -65,11 +65,11 @@ public class BowController {
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(getErrorJson("NOT_FOUND",
                             e.getMessage(),
-                            "/archers/" + archerId + "/bows/"));
+                            "/archers/" + archerId + "/bows"));
         }
     }
 
-    @PostMapping("/{bowId}/")
+    @PutMapping("/{bowId}")
     public ResponseEntity<?> updateBow(@PathVariable long archerId, @PathVariable long bowId, @RequestBody Bow bow) {
         try {
             bowService.updateBow(bowId, bow);
@@ -80,11 +80,11 @@ public class BowController {
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(getErrorJson("NOT_FOUND",
                             e.getMessage(),
-                            "/archers/" + archerId + "/bows/" + bowId + "/"));
+                            "/archers/" + archerId + "/bows/" + bowId));
         }
     }
 
-    @PutMapping("/{bowId}/")
+    @PatchMapping("/{bowId}")
     public ResponseEntity<?> addDistanceSettings(@PathVariable long archerId,
                                                  @RequestBody DistanceSettings distanceSettings,
                                                  @PathVariable long bowId) {
@@ -97,7 +97,7 @@ public class BowController {
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(getErrorJson("NOT_FOUND",
                             e.getMessage(),
-                            "/archers/" + archerId + "/bows/" + bowId + "/"));
+                            "/archers/" + archerId + "/bows/" + bowId));
         }
     }
 

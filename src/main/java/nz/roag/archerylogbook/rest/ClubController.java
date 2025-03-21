@@ -39,7 +39,7 @@ public class ClubController {
         }
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public void addClub(@RequestBody Club club) {
         clubService.addClub(club);
     }

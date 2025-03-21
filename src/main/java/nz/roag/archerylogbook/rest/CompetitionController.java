@@ -79,7 +79,8 @@ public class CompetitionController {
         }
     }
 
-    @PostMapping("/")
+
+    @PostMapping("")
     public ResponseEntity<?> addCompetition(@PathVariable long archerId, @RequestBody Competition competition) {
         try {
             competitionService.addCompetition(archerId, competition);
@@ -90,14 +91,14 @@ public class CompetitionController {
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(getErrorJson("NOT_FOUND",
                             e.getMessage(),
-                            "/archers/" + archerId + "/competitions/"));
+                            "/archers/" + archerId + "/competitions"));
         } catch (IllegalArgumentException e) {
             logger.error(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(getErrorJson("BAD_REQUEST",
                             e.getMessage(),
-                            "/archers/" + archerId + "/competitions/"));
+                            "/archers/" + archerId + "/competitions"));
         }
     }
 

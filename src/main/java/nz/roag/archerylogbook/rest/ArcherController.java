@@ -53,7 +53,7 @@ public class ArcherController {
         }
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public void addArcher(@RequestBody Archer archer) {
         archerService.addArcher(archer);
     }
@@ -63,7 +63,7 @@ public class ArcherController {
         archerService.deleteArcher(id);
     }
 
-    @PostMapping("/{id}/")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateArcher(@PathVariable long id, @RequestBody Archer archer) {
         try {
             archerService.updateArcher(id, archer);
@@ -73,7 +73,7 @@ public class ArcherController {
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(getErrorJson("NOT_FOUND",
                             e.getMessage(),
-                            "/archers/" + id + "/"));
+                            "/archers/" + id));
         }
     }
 }

@@ -118,8 +118,8 @@ class ArcherControllerTests extends AbstractControllerTest {
 
     @Test
     void addArcher() throws Exception {
-        mvc.perform(post("/archers/")
-                        .headers(getHttpHeaders("/archers/"))
+        mvc.perform(post("/archers")
+                        .headers(getHttpHeaders("/archers"))
                         .contentType("application/json")
                         .content(json))
                 .andExpect(status().isOk());
@@ -140,8 +140,8 @@ class ArcherControllerTests extends AbstractControllerTest {
         given(archerRepository.findById(anyLong()))
                 .willReturn(Optional.of(archer));
 
-        mvc.perform(post("/archers/1/")
-                        .headers(getHttpHeaders("/archers/1/"))
+        mvc.perform(put("/archers/1")
+                        .headers(getHttpHeaders("/archers/1"))
                         .contentType("application/json")
                         .content(json))
                 .andExpect(status().isOk());

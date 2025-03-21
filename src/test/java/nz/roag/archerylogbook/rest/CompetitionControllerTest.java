@@ -234,8 +234,8 @@ public class CompetitionControllerTest extends AbstractControllerTest {
             }
             """;
 
-        mvc.perform(post("/archers/1/competitions/")
-                        .headers(getHttpHeaders("/archers/1/competitions/"))
+        mvc.perform(post("/archers/1/competitions")
+                        .headers(getHttpHeaders("/archers/1/competitions"))
                         .contentType("application/json")
                         .content(competitionJson))
                 .andExpect(status().isOk());
