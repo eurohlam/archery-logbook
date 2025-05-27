@@ -4,7 +4,7 @@ version: '3.1'
 services:
 
   db:
-    image: mariadb:10.4
+    image: mariadb:11.4
     restart: always
     environment:
       MARIADB_ROOT_PASSWORD: example
@@ -23,7 +23,7 @@ services:
   app:
     build:
       context: .
-    image: eurohlam/archery-logbook:1.0.8
+    image: eurohlam/archery-logbook:1.0.9
     container_name: archery-logbook
     restart: always
     environment:
@@ -32,7 +32,7 @@ services:
       SERVER_SSL_KEYSTORE_PASSWORD: changeit
       SERVER_SSL_KEY_ALIAS: archery-logbook
       SERVER_SSL_KEY_PASSWORD: changeit
-      DB_URL: jdbc:mysql://host.docker.internal:3306/archery
+      DB_URL: jdbc:mariadb://host.docker.internal:3306/archery
       DB_USER: robin
       DB_PWD: hood
     extra_hosts:
