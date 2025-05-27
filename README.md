@@ -35,7 +35,7 @@ The API is designed to work with MySQL/MariaDB as a database. In local environme
         --env SERVER_SSL_KEYSTORE_PASSWORD=changeit \
         --env SERVER_SSL_KEY_ALIAS=archery-logbook \
         --env SERVER_SSL_KEY_PASSWORD=changeit \
-        --env DB_URL=jdbc:mysql://host.docker.internal:3306/archery \
+        --env DB_URL=jdbc:mariadb://host.docker.internal:3306/archery \
         --env DB_USER=robin \
         --env DB_PWD=hood \
         -p 7878:7878 \
