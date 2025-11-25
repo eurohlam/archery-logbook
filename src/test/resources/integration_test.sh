@@ -125,6 +125,20 @@ curl -k -X "DELETE" \
      -H "signature:CSzUUIUnnCPr80xeVjm7yVR8coOJiu5H3iJWMFIW538=" \
      https://localhost:7878/archers/1/rounds/2
 
+## get best rounds
+curl -k -H "key:testAccessKey" -H "nonce:test" -H "timestamp:2025-01-01" \
+     -H "signature:HtPqbvMfww3noAKt5KaP+SkHKMdhERhWfMwHzrui0gk=" \
+     https://localhost:7878/archers/1/rounds/statistics/best
+
+## get total rounds
+curl -k -H "key:testAccessKey" -H "nonce:test" -H "timestamp:2025-01-01" \
+     -H "signature:PM3mJuq8b0Zhyl4pCyibM2Mma1ZIhiZe7wFw/F1pgbo=" \
+     https://localhost:7878/archers/1/rounds/statistics/total
+
+## get total rounds for last month
+curl -k -H "key:testAccessKey" -H "nonce:test" -H "timestamp:2025-01-01" \
+     -H "signature:U21s1VrgxsJsDM/vifk8gY3e08f40ewAg/dxizvcUog=" \
+     https://localhost:7878/archers/1/rounds/statistics/total/lastMonth
 
 ######################
 #  Competitions API  #

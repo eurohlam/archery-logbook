@@ -177,3 +177,19 @@ INSERT INTO `archery_shot` (`id`, `end_id`, `shot_number`, `shot_score`) VALUES
 (8,	3,	1,	8),
 (9,	3,	2,	9),
 (10,3,	3,	9);
+
+
+/* best score by distance calculation*/
+select * from
+             (select sums.*,
+                      row_number() over (partition by sums.distance order by sums.round_sum desc) ord
+               from (select distinct r.*,
+                                     sum(s.shot_score) over (partition by r.id order by null) as round_sum
+                     from archery_round r,
+                          archery_end e,
+                          archery_shot s
+                     where r.id = e.round_id
+                       and e.id = s.end_id
+                       and r.archer_id = 60
+                       and r.archived = false) sums) mx
+where mx.ord=1;

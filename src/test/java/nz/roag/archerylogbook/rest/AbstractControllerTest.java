@@ -3,7 +3,7 @@ package nz.roag.archerylogbook.rest;
 import nz.roag.archerylogbook.db.SubscriberRepository;
 import nz.roag.archerylogbook.db.model.Subscriber;
 import nz.roag.archerylogbook.security.HmacUtil;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.HttpHeaders;
 
 import java.util.Optional;
@@ -13,7 +13,7 @@ import static org.mockito.BDDMockito.given;
 
 class AbstractControllerTest {
 
-    @MockBean
+    @MockitoBean
     private SubscriberRepository subscriberRepository;
     private Subscriber subscriber;
 

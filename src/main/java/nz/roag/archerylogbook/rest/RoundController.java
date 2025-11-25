@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static nz.roag.archerylogbook.rest.ErrorMessage.getErrorJson;
@@ -104,4 +105,46 @@ public class RoundController {
     public void deleteRound(@PathVariable long roundId) {
         roundService.deleteRound(roundId);
     }
+
+
+    /*** Dashboard statistics ****/
+
+
+    @GetMapping("/statistics/best")
+    public ResponseEntity<?> listBestRounds(@PathVariable long archerId) {
+        try {
+            List<Round> rounds = roundService.listBestRounds(archerId);
+            return new ResponseEntity<>(rounds, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            logger.error(e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(getErrorJson("NOT_FOUND",
+                            e.getMessage(),
+                            "/archers/" + archerId + "/rounds/best"));
+        }
+    }
+
+    @GetMapping("/statistics/total")
+    public ResponseEntity<Integer> getTotalRounds(@PathVariable long archerId) {
+        try {
+            var total = roundService.getTotalRounds(archerId);
+            return new ResponseEntity<>(total, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            logger.error(e.getMessage(), e);
+            return new ResponseEntity<>(0, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/statistics/total/lastMonth")
+    public ResponseEntity<Integer> getTotalLastMonthRounds(@PathVariable long archerId) {
+        try {
+            var total = roundService.getTotalLastMonthRounds(archerId);
+            return new ResponseEntity<>(total, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            logger.error(e.getMessage(), e);
+            return new ResponseEntity<>(0, HttpStatus.NOT_FOUND);
+        }
+    }
+
 }
