@@ -85,6 +85,6 @@ public class Round {
 
     @Override
     public String toString() {
-        return String.format("{ id: %d, roundDate: %s, distance: %s, targetFace: %s, shots: %d, sum: %d, avg: %s }", getId(), getRoundDate(), getDistance(), getTargetFace(), getShotsCount(), getSum(), getAvg());
+        return String.format("{ id: %d, roundDate: %s, distance: %s, targetFace: %s, shots: %d, score: %d, avg: %s }", getId(), getRoundDate(), getDistance(), getTargetFace(), getShotsCount(), getSum(), getAvg());
     }
 }
