@@ -1,7 +1,10 @@
 package nz.roag.archerylogbook.db;
 
+import nz.roag.archerylogbook.db.model.Archer;
+import nz.roag.archerylogbook.db.model.Club;
 import nz.roag.archerylogbook.db.model.Subscriber;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -16,16 +19,23 @@ class SubscriberRepositoryTest {
     @Autowired
     private SubscriberRepository subscriberRepository;
 
-    @Test
-    void subscriberRepositoryTest() {
+    @BeforeEach
+    void beforeEach() {
         var subscriber = new Subscriber();
         subscriber.setAccessKey("testAccessKey");
         subscriber.setSecretKey("testSecret");
         entityManager.persist(subscriber);
+    }
 
+    @Test
+    void findAllTest() {
         Assertions.assertEquals(1, subscriberRepository.findAll().size());
+    }
 
+    @Test
+    void findByIdTest() {
         var storedSubscriber = subscriberRepository.findById("testAccessKey").get();
         Assertions.assertEquals("testSecret", storedSubscriber.getSecretKey());
     }
+
 }

@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -67,4 +68,25 @@ public class RoundService {
         logger.warn("Deleting round by id {}", id);
         roundRepository.setArchivedForRoundId(true, id);
     }
+
+    /*** Dashboard statistics ***/
+
+    public List<Round> listBestRounds(long archerId) throws NoSuchElementException {
+        logger.debug("Getting best rounds for archerId {}", archerId);
+        var archer = archerRepository.findById(archerId).orElseThrow(() -> new NoSuchElementException("Archer not found. archerId=" + archerId));
+        return roundRepository.getBestRoundsByDistanceForArcherId(archerId);
+    }
+
+    public int getTotalRounds(long archerId) throws NoSuchElementException {
+        logger.debug("Getting total number of rounds for archerId {}", archerId);
+        var archer = archerRepository.findById(archerId).orElseThrow(() -> new NoSuchElementException("Archer not found. archerId=" + archerId));
+        return roundRepository.getTotalRoundsByArcherId(archerId);
+    }
+
+    public int getTotalLastMonthRounds(long archerId) throws NoSuchElementException {
+        logger.debug("Getting total number of rounds for last month for archerId {}", archerId);
+        var archer = archerRepository.findById(archerId).orElseThrow(() -> new NoSuchElementException("Archer not found. archerId=" + archerId));
+        return roundRepository.getTotalRoundsLastMonthByArcherId(archerId);
+    }
+
 }

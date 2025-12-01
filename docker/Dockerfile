@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17
+FROM eclipse-temurin:25
 
 LABEL project="Archer's Log Book"
 LABEL description="This is a spring-boot based REST API that helps to build a back-end for [Archer's Log Book](https://roundkick.nz/) project"

@@ -596,6 +596,96 @@ paths:
         '200':
           description: successful operation
 
+  /archers/{archerId}/rounds/statisctics/total:
+    get:
+      tags:
+        - rounds
+      summary: Get total number of rounds for current archer
+      description: Returns a total number of rounds for current archer
+      operationId: getTotalRounds
+      parameters:
+        - $ref: '#/components/parameters/key'
+        - $ref: '#/components/parameters/nonce'
+        - $ref: '#/components/parameters/timestamp'
+        - $ref: '#/components/parameters/signature'
+        - name: archerId
+          in: path
+          description: Archer ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+        '404':
+          description: Archer not found
+  /archers/{archerId}/rounds/statisctics/total/lastMonth:
+    get:
+      tags:
+        - rounds
+      summary: Get total number of rounds for the last month for current archer
+      description: Returns a total number of rounds for the last month for current archer
+      operationId: getTotalRounds
+      parameters:
+        - $ref: '#/components/parameters/key'
+        - $ref: '#/components/parameters/nonce'
+        - $ref: '#/components/parameters/timestamp'
+        - $ref: '#/components/parameters/signature'
+        - name: archerId
+          in: path
+          description: Archer ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+        '404':
+          description: Archer not found
+
+  /archers/{archerId}/rounds/statisctics/best:
+    get:
+      tags:
+        - rounds
+      summary: Get a list of best rounds for each distance for current archer
+      description: Returns a list of best rounds for each distance for current archer
+      operationId: getTotalRounds
+      parameters:
+        - $ref: '#/components/parameters/key'
+        - $ref: '#/components/parameters/nonce'
+        - $ref: '#/components/parameters/timestamp'
+        - $ref: '#/components/parameters/signature'
+        - name: archerId
+          in: path
+          description: Archer ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Round"
+        '404':
+          description: Archer not found
+
   /archers/{archerId}/competitions:
     get:
       tags:
@@ -825,7 +915,8 @@ a concatenation of `path + key + nonce + timestamp`"
           example: 1
         club:
           type: object
-          $ref: '#/components/schemas/Club'
+          items:
+            $ref: '#/components/schemas/Club'
           readOnly: true
         club_name:
           type: string
@@ -951,7 +1042,8 @@ a concatenation of `path + key + nonce + timestamp`"
           example: 1
         bow:
           type: object
-          $ref: '#/components/schemas/Bow'
+          items:
+            $ref: '#/components/schemas/Bow'
           readOnly: true
         competitionId:
           type: integer

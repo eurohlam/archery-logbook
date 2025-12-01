@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
@@ -34,13 +34,13 @@ class RoundControllerTests extends AbstractControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    @MockBean
+    @MockitoBean
     private ArcherRepository archerRepository;
-    @MockBean
+    @MockitoBean
     private RoundRepository roundRepository;
-    @MockBean
+    @MockitoBean
     private EndRepository endRepository;
-    @MockBean
+    @MockitoBean
     private ShotRepository shotRepository;
 
     private Archer archer;
@@ -310,4 +310,43 @@ class RoundControllerTests extends AbstractControllerTest {
                         .headers(getHttpHeaders("/archers/1/rounds/1")))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void listBestRounds() throws Exception {
+        given(roundRepository.getBestRoundsByDistanceForArcherId(anyLong()))
+                .willReturn(List.of(round));
+
+        var pageJson = "["+ json + "]";
+
+        mvc.perform(get("/archers/1/rounds/statistics/best")
+                        .headers(getHttpHeaders("/archers/1/rounds/statistics/best")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(content().json(pageJson));
+    }
+
+    @Test
+    void getTotalRounds() throws Exception {
+        given(roundRepository.getTotalRoundsByArcherId(anyLong()))
+                .willReturn(2);
+
+        mvc.perform(get("/archers/1/rounds/statistics/total")
+                        .headers(getHttpHeaders("/archers/1/rounds/statistics/total")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(content().string("2"));
+    }
+
+    @Test
+    void getTotalLastMonthRounds() throws Exception {
+        given(roundRepository.getTotalRoundsLastMonthByArcherId(anyLong()))
+                .willReturn(1);
+
+        mvc.perform(get("/archers/1/rounds/statistics/total/lastMonth")
+                        .headers(getHttpHeaders("/archers/1/rounds/statistics/total/lastMonth")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(content().string("1"));
+    }
+
 }
