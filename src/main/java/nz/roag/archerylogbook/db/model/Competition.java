@@ -102,13 +102,13 @@ public class Competition {
         var summary = new String[rounds.size()];
         for (int i =0 ; i < rounds.size(); i++) {
             var round = rounds.get(i);
-            summary[i] = ("Round #" + (i + 1) + ": distance: " + round.getDistance() + "m; sum: " + round.getSum());
+            summary[i] = ("Round #" + (i + 1) + ": distance: " + round.getDistance() + "m; score: " + round.getSum());
         }
         return summary;
     }
 
     @Override
     public String toString() {
-        return String.format("{ id: %d, competitionType: %s, competitionDate: %s, shots: %d, sum: %d, avg: %s }", getId(), getCompetitionType(), getCompetitionDate(), getShotsCount(), getSum(), getAvg());
+        return String.format("{ id: %d, competitionType: %s, competitionDate: %s, shots: %d, score: %d, avg: %s }", getId(), getCompetitionType(), getCompetitionDate(), getShotsCount(), getSum(), getAvg());
     }
 }
