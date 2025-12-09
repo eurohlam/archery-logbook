@@ -7,6 +7,7 @@ import nz.roag.archerylogbook.db.ShotRepository;
 import nz.roag.archerylogbook.db.RoundRepository;
 import nz.roag.archerylogbook.db.model.Archer;
 import nz.roag.archerylogbook.db.model.Round;
+import nz.roag.archerylogbook.db.model.TargetFace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,52 @@ public class RoundService {
         logger.debug("Getting rounds for archerId {}; page {} size {}", archerId, page, size);
         var archer = archerRepository.findById(archerId).orElseThrow(() -> new NoSuchElementException("Archer not found. archerId=" + archerId));
         return roundRepository.findByArcherIdAndArchived(archer.getId(), false, PageRequest.of(page, size, Sort.by("roundDate").descending()));
+    }
+
+    /*** Filtering methods ***/
+
+    public Page<Round> listRoundsWithFilters(long archerId, int page, int size, Long bowId, String distance, TargetFace targetFace, Boolean archived) throws NoSuchElementException {
+        logger.debug("Getting rounds for archerId {} with filters: bowId={}, distance={}, targetFace={}, archived={}; page {} size {}", 
+                archerId, bowId, distance, targetFace, archived, page, size);
+        // Validate archer exists
+        archerRepository.findById(archerId).orElseThrow(() -> new NoSuchElementException("Archer not found. archerId=" + archerId));
+        
+        var pageable = PageRequest.of(page, size, Sort.by("roundDate").descending());
+        boolean isArchived = archived != null ? archived : false;
+        
+        // Determine which repository method to call based on provided filters
+        if (bowId != null && distance != null && targetFace != null) {
+            // All three filters
+            return roundRepository.findByArcherIdAndBowIdAndDistanceAndTargetFaceAndArchived(
+                    archerId, bowId, distance, targetFace, isArchived, pageable);
+        } else if (bowId != null && distance != null) {
+            // Bow + Distance
+            return roundRepository.findByArcherIdAndBowIdAndDistanceAndArchived(
+                    archerId, bowId, distance, isArchived, pageable);
+        } else if (bowId != null && targetFace != null) {
+            // Bow + TargetFace
+            return roundRepository.findByArcherIdAndBowIdAndTargetFaceAndArchived(
+                    archerId, bowId, targetFace, isArchived, pageable);
+        } else if (distance != null && targetFace != null) {
+            // Distance + TargetFace
+            return roundRepository.findByArcherIdAndDistanceAndTargetFaceAndArchived(
+                    archerId, distance, targetFace, isArchived, pageable);
+        } else if (bowId != null) {
+            // Bow only
+            return roundRepository.findByArcherIdAndBowIdAndArchived(
+                    archerId, bowId, isArchived, pageable);
+        } else if (distance != null) {
+            // Distance only
+            return roundRepository.findByArcherIdAndDistanceAndArchived(
+                    archerId, distance, isArchived, pageable);
+        } else if (targetFace != null) {
+            // TargetFace only
+            return roundRepository.findByArcherIdAndTargetFaceAndArchived(
+                    archerId, targetFace, isArchived, pageable);
+        } else {
+            // No filters, use archived flag only
+            return roundRepository.findByArcherIdAndArchived(archerId, isArchived, pageable);
+        }
     }
 
     @Transactional

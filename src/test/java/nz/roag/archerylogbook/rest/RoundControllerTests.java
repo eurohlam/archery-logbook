@@ -349,4 +349,247 @@ class RoundControllerTests extends AbstractControllerTest {
                 .andExpect(content().string("1"));
     }
 
+    /*** Filtering tests ***/
+
+    @Test
+    void listRoundsFilteredByBowId() throws Exception {
+        given(roundRepository.findByArcherIdAndBowIdAndArchived(anyLong(), anyLong(), anyBoolean(), any(Pageable.class)))
+                .willReturn(new PageImpl<>(List.of(round)));
+
+        var pageJson = """
+                {
+                "pageNumber":0,
+                "totalPages":1,
+                "isLastPage":true,
+                "isFirstPage":true,
+                "items":[
+                """ + json + "]}";
+
+        mvc.perform(get("/archers/1/rounds?bowId=1")
+                        .headers(getHttpHeaders("/archers/1/rounds?bowId=1")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(content().json(pageJson));
+    }
+
+    @Test
+    void listRoundsFilteredByDistance() throws Exception {
+        given(roundRepository.findByArcherIdAndDistanceAndArchived(anyLong(), anyString(), anyBoolean(), any(Pageable.class)))
+                .willReturn(new PageImpl<>(List.of(round)));
+
+        var pageJson = """
+                {
+                "pageNumber":0,
+                "totalPages":1,
+                "isLastPage":true,
+                "isFirstPage":true,
+                "items":[
+                """ + json + "]}";
+
+        mvc.perform(get("/archers/1/rounds?distance=30")
+                        .headers(getHttpHeaders("/archers/1/rounds?distance=30")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(content().json(pageJson));
+    }
+
+    @Test
+    void listRoundsFilteredByTargetFace() throws Exception {
+        given(roundRepository.findByArcherIdAndTargetFaceAndArchived(anyLong(), any(TargetFace.class), anyBoolean(), any(Pageable.class)))
+                .willReturn(new PageImpl<>(List.of(round)));
+
+        var pageJson = """
+                {
+                "pageNumber":0,
+                "totalPages":1,
+                "isLastPage":true,
+                "isFirstPage":true,
+                "items":[
+                """ + json + "]}";
+
+        mvc.perform(get("/archers/1/rounds?targetFace=122cm")
+                        .headers(getHttpHeaders("/archers/1/rounds?targetFace=122cm")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(content().json(pageJson));
+    }
+
+    @Test
+    void listRoundsFilteredByArchived() throws Exception {
+        given(roundRepository.findByArcherIdAndArchived(anyLong(), anyBoolean(), any(Pageable.class)))
+                .willReturn(new PageImpl<>(List.of(round)));
+
+        var pageJson = """
+                {
+                "pageNumber":0,
+                "totalPages":1,
+                "isLastPage":true,
+                "isFirstPage":true,
+                "items":[
+                """ + json + "]}";
+
+        mvc.perform(get("/archers/1/rounds?archived=true")
+                        .headers(getHttpHeaders("/archers/1/rounds?archived=true")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(content().json(pageJson));
+    }
+
+    @Test
+    void listRoundsFilteredByBowIdAndDistance() throws Exception {
+        given(roundRepository.findByArcherIdAndBowIdAndDistanceAndArchived(anyLong(), anyLong(), anyString(), anyBoolean(), any(Pageable.class)))
+                .willReturn(new PageImpl<>(List.of(round)));
+
+        var pageJson = """
+                {
+                "pageNumber":0,
+                "totalPages":1,
+                "isLastPage":true,
+                "isFirstPage":true,
+                "items":[
+                """ + json + "]}";
+
+        mvc.perform(get("/archers/1/rounds?bowId=1&distance=30")
+                        .headers(getHttpHeaders("/archers/1/rounds?bowId=1&distance=30")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(content().json(pageJson));
+    }
+
+    @Test
+    void listRoundsFilteredByBowIdAndTargetFace() throws Exception {
+        given(roundRepository.findByArcherIdAndBowIdAndTargetFaceAndArchived(anyLong(), anyLong(), any(TargetFace.class), anyBoolean(), any(Pageable.class)))
+                .willReturn(new PageImpl<>(List.of(round)));
+
+        var pageJson = """
+                {
+                "pageNumber":0,
+                "totalPages":1,
+                "isLastPage":true,
+                "isFirstPage":true,
+                "items":[
+                """ + json + "]}";
+
+        mvc.perform(get("/archers/1/rounds?bowId=1&targetFace=122cm")
+                        .headers(getHttpHeaders("/archers/1/rounds?bowId=1&targetFace=122cm")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(content().json(pageJson));
+    }
+
+    @Test
+    void listRoundsFilteredByDistanceAndTargetFace() throws Exception {
+        given(roundRepository.findByArcherIdAndDistanceAndTargetFaceAndArchived(anyLong(), anyString(), any(TargetFace.class), anyBoolean(), any(Pageable.class)))
+                .willReturn(new PageImpl<>(List.of(round)));
+
+        var pageJson = """
+                {
+                "pageNumber":0,
+                "totalPages":1,
+                "isLastPage":true,
+                "isFirstPage":true,
+                "items":[
+                """ + json + "]}";
+
+        mvc.perform(get("/archers/1/rounds?distance=30&targetFace=122cm")
+                        .headers(getHttpHeaders("/archers/1/rounds?distance=30&targetFace=122cm")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(content().json(pageJson));
+    }
+
+    @Test
+    void listRoundsFilteredByAllParameters() throws Exception {
+        given(roundRepository.findByArcherIdAndBowIdAndDistanceAndTargetFaceAndArchived(anyLong(), anyLong(), anyString(), any(TargetFace.class), anyBoolean(), any(Pageable.class)))
+                .willReturn(new PageImpl<>(List.of(round)));
+
+        var pageJson = """
+                {
+                "pageNumber":0,
+                "totalPages":1,
+                "isLastPage":true,
+                "isFirstPage":true,
+                "items":[
+                """ + json + "]}";
+
+        mvc.perform(get("/archers/1/rounds?bowId=1&distance=30&targetFace=122cm&archived=false")
+                        .headers(getHttpHeaders("/archers/1/rounds?bowId=1&distance=30&targetFace=122cm&archived=false")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(content().json(pageJson));
+    }
+
+    @Test
+    void listRoundsWithInvalidTargetFace() throws Exception {
+        mvc.perform(get("/archers/1/rounds?targetFace=invalid")
+                        .headers(getHttpHeaders("/archers/1/rounds?targetFace=invalid")))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(content().json("""
+                        {
+                            "status": "BAD_REQUEST",
+                            "errorMessage": "Invalid targetFace value: invalid",
+                            "path": "/archers/1/rounds"
+                        }
+                        """));
+    }
+
+    @Test
+    void listRoundsWithAllTargetFaceValues() throws Exception {
+        given(roundRepository.findByArcherIdAndTargetFaceAndArchived(anyLong(), any(TargetFace.class), anyBoolean(), any(Pageable.class)))
+                .willReturn(new PageImpl<>(List.of(round)));
+
+        // Test all valid targetFace enum values
+        String[] validTargetFaces = {"122cm", "80cm", "60cm", "40cm", "Multi-spot"};
+        for (String targetFace : validTargetFaces) {
+            mvc.perform(get("/archers/1/rounds?targetFace=" + targetFace)
+                            .headers(getHttpHeaders("/archers/1/rounds?targetFace=" + targetFace)))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType("application/json"));
+        }
+    }
+
+    @Test
+    void listRoundsWithCombinedFiltersAndPagination() throws Exception {
+        given(roundRepository.findByArcherIdAndBowIdAndDistanceAndArchived(anyLong(), anyLong(), anyString(), anyBoolean(), any(Pageable.class)))
+                .willReturn(new PageImpl<>(List.of(round)));
+
+        var pageJson = """
+                {
+                "pageNumber":1,
+                "totalPages":1,
+                "isLastPage":true,
+                "isFirstPage":true,
+                "items":[
+                """ + json + "]}";
+
+        mvc.perform(get("/archers/1/rounds?bowId=1&distance=30&page=1&size=5")
+                        .headers(getHttpHeaders("/archers/1/rounds?bowId=1&distance=30&page=1&size=5")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(content().json(pageJson));
+    }
+
+    @Test
+    void listRoundsWithEmptyTargetFace() throws Exception {
+        // Empty targetFace should be ignored (not cause an error)
+        given(roundRepository.findByArcherIdAndArchived(anyLong(), anyBoolean(), any(Pageable.class)))
+                .willReturn(new PageImpl<>(List.of(round)));
+
+        var pageJson = """
+                {
+                "pageNumber":0,
+                "totalPages":1,
+                "isLastPage":true,
+                "isFirstPage":true,
+                "items":[
+                """ + json + "]}";
+
+        mvc.perform(get("/archers/1/rounds?targetFace=")
+                        .headers(getHttpHeaders("/archers/1/rounds?targetFace=")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(content().json(pageJson));
+    }
+
 }

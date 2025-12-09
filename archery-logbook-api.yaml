@@ -457,7 +457,7 @@ paths:
       tags:
         - rounds
       summary: Get all rounds for current archer
-      description: Returns a list of rounds for current archer
+      description: Returns a list of rounds for current archer. Supports filtering by bow, distance, targetFace, and archived status. All filter parameters are optional and can be combined.
       operationId: listAllRounds
       parameters:
         - $ref: '#/components/parameters/key'
@@ -488,6 +488,38 @@ paths:
             default: 20
             minimum: 1
             maximum: 100
+        - name: bowId
+          in: query
+          description: Filter rounds by bow ID
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: distance
+          in: query
+          description: Filter rounds by distance (e.g., "30", "50")
+          required: false
+          schema:
+            type: string
+        - name: targetFace
+          in: query
+          description: Filter rounds by target face size
+          required: false
+          schema:
+            type: string
+            enum:
+              - 122cm
+              - 80cm
+              - 60cm
+              - 40cm
+              - Multi-spot
+        - name: archived
+          in: query
+          description: Filter rounds by archived status. If not provided, defaults to false (non-archived rounds only)
+          required: false
+          schema:
+            type: boolean
+            default: false
       responses:
         '200':
           description: successful operation
@@ -497,6 +529,8 @@ paths:
                 type: object
                 items:
                   $ref: '#/components/schemas/ResultPage'
+        '400':
+          description: Bad request - invalid parameter value (e.g., invalid targetFace value)
         '404':
           description: Archer not found
     post:

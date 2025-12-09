@@ -1,6 +1,7 @@
 package nz.roag.archerylogbook.rest;
 
 import nz.roag.archerylogbook.db.model.Round;
+import nz.roag.archerylogbook.db.model.TargetFace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,11 @@ public class RoundController {
     @GetMapping("")
     public ResponseEntity<?> listAllRounds(@PathVariable long archerId,
                                            @RequestParam(name = "page", defaultValue = "0") int page,
-                                           @RequestParam(name = "size", defaultValue = "20") int size) {
+                                           @RequestParam(name = "size", defaultValue = "20") int size,
+                                           @RequestParam(name = "bowId", required = false) Long bowId,
+                                           @RequestParam(name = "distance", required = false) String distance,
+                                           @RequestParam(name = "targetFace", required = false) String targetFace,
+                                           @RequestParam(name = "archived", required = false) Boolean archived) {
         try {
             if (page < 0) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -42,7 +47,28 @@ public class RoundController {
                                 "The value of size parameter should be between 1 and 100",
                                 "/archers/" + archerId + "/rounds"));
             }
-            org.springframework.data.domain.Page<Round> rounds = roundService.listAllRounds(archerId, page, size);
+
+            // Parse targetFace if provided
+            TargetFace targetFaceEnum = null;
+            if (targetFace != null && !targetFace.isEmpty()) {
+                try {
+                    targetFaceEnum = TargetFace.fromValue(targetFace);
+                } catch (IllegalArgumentException e) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body(getErrorJson("BAD_REQUEST",
+                                    "Invalid targetFace value: " + targetFace,
+                                    "/archers/" + archerId + "/rounds"));
+                }
+            }
+
+            // Use filtering method if any filter is provided, otherwise use the simple method
+            org.springframework.data.domain.Page<Round> rounds;
+            if (bowId != null || distance != null || targetFaceEnum != null || archived != null) {
+                rounds = roundService.listRoundsWithFilters(archerId, page, size, bowId, distance, targetFaceEnum, archived);
+            } else {
+                rounds = roundService.listAllRounds(archerId, page, size);
+            }
 
             ResultPage<Round> roundResultPage = new ResultPage<>();
             roundResultPage.setItems(rounds.getContent());
